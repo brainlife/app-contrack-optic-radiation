@@ -28,6 +28,7 @@ else
 	hemi = 'right';
 end
 
+topDir = pwd;
 baseDir = fullfile(pwd,'tmpSubj');
 
 
@@ -68,7 +69,8 @@ ctrParams.executeSh = 0;
 [cmd, ~] = ctrInitBatchTrack(ctrParams);
 
 %% run scripts
-system(cmd)
+system(cmd);
+cd(topDir);
 
 %% clip fibers and create classification structure
 [whole_classification,mergedFG] = cleanFibers(seedroi);

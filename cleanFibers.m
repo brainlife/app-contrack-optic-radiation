@@ -26,7 +26,7 @@ Not = bsc_mergeROIs(hemisphereROI,csfROI);
 
 %% Load Optic radiations and clip for cleaning
 % load and clip optic radiations
-fgPath = {fullfile(orFibersDir.folder,orFibersDir.name)};
+fgPath = {fullfile(orFibersDir(1).folder,orFibersDir(1).name)};
 
 % need specific modification to how pdb fgs are loaded
 [mergedFG,classification] = bsc_mergeFGandClass(fgPath);
