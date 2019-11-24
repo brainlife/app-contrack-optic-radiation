@@ -1,0 +1,19 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=8,walltime=6:00:00
+#PBS -N app-contract-optic-radiation
+
+time singularity exec -e docker://brainlife/mrtrix3:3.0_RC3 ./csf.sh
+
+[ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
+echo $FREESURFER_LICENSE > license.txt
+
+time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./convert.sh
+
+time singularity exec -e docker://brainlife/fsl:latest ./mask.sh
+
+time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/opticRadiationContrack
+
+#mv output.mat ./wmc/classification.mat
+#mv tracts ./wmc/
+#mv output_fibercounts.txt ./wmc/
+#rm tmpSubj
