@@ -16,7 +16,7 @@ if ~isdeployed
     addpath(genpath('/usr/local/wma_tools'))
 end
 
-addpath(gepnath('./vistasoft'))
+addpath(genpath('./vistasoft'))
 
 % load my own config.json
 config = loadjson('config.json');
