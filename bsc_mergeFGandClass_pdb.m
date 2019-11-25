@@ -93,7 +93,7 @@ mergedClassification.index=[];
 %% Merge input FGs, determine homology, and create classification structure
 for iInputs=1:length(inputFGs)
     %loads the fg
-    [toMergeFG, ~] = fgRead(inputFGs{iInputs});
+    [toMergeFG] = fgRead(inputFGs{iInputs});
     
     %checks to see if the .fibers field is empty, or if the thing in the
     %.fibers field is of 0 length (apparently this happens when converting
