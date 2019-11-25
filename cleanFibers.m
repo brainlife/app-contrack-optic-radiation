@@ -29,7 +29,7 @@ Not = bsc_mergeROIs(hemisphereROI,csfROI);
 fgPath = {fullfile(orFibersDir(1).folder,orFibersDir(1).name)};
 
 % need specific modification to how pdb fgs are loaded
-[mergedFG,classification] = bsc_mergeFGandClass(fgPath);
+[mergedFG,classification] = bsc_mergeFGandClass_pdb(fgPath);
 
 classification.names = {sprintf('%s-optic-radiation',hemi)};
 
