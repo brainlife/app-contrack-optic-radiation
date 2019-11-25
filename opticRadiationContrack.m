@@ -5,18 +5,18 @@ if ~isdeployed
 
     %for IU HPC
     addpath(genpath('/N/u/brlife/git/encode'))
+    addpath(genpath('/N/u/brlife/git/vistasoft'))
     addpath(genpath('/N/u/brlife/git/jsonlab'))
     addpath(genpath('/N/u/brlife/git/spm'))
     addpath(genpath('/N/u/brlife/git/wma_tools'))
 
     %for old VM
+    addpath(genpath('/usr/local/vistasoft'))
     addpath(genpath('/usr/local/encode'))
     addpath(genpath('/usr/local/jsonlab'))
     addpath(genpath('/usr/local/spm'))
     addpath(genpath('/usr/local/wma_tools'))
 end
-
-addpath(genpath('./vistasoft'))
 
 % load my own config.json
 config = loadjson('config.json');
@@ -73,7 +73,7 @@ cd(topDir);
 scriptPath = dir('tmpSubj/dtiinit/dti/fibers/conTrack/OR/*.sh');
 fid = fopen(fullfile(scriptPath.folder,scriptPath.name));
 text = textscan(fid,'%s','delimiter','\n');
-text{1}{2} = strcat(extractBefore(text{1}{2},' -i'),'/vistasoft/mrDiffusion/fiber/tractography/contrack/contrack_gen.glxa64 ',extractAfter(text{1}{2},' -i'));
+text{1}{2} = strcat(extractBefore(text{1}{2},' -i'),'contrack_gen.glxa64 ',extractAfter(text{1}{2},' -i'));
 fclose(fid);
 fid = fopen(fullfile(scriptPath.folder,scriptPath.name),'w');
 fprintf(fid,'%s\n',text{:}{:});
