@@ -80,7 +80,7 @@ fprintf(fid,'%s\n',text{:}{:});
 fclose(fid);
 
 %% run scripts
-cd(scriptPath);
+cd(scriptPath.folder);
 system(cmd);
 
 cd(topDir);
