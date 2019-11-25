@@ -68,12 +68,11 @@ ctrParams.executeSh = 0;
 % make contrack scripts
 [cmd, ~] = ctrInitBatchTrack(ctrParams);
 
-cd(topDir);
 % fix script for missing path to contrack c code
 scriptPath = dir('tmpSubj/dtiinit/dti/fibers/conTrack/OR/*.sh');
 fid = fopen(fullfile(scriptPath.folder,scriptPath.name));
 text = textscan(fid,'%s','delimiter','\n');
-text{1}{2} = strcat(extractBefore(text{1}{2},' -i'),'/contrack_gen.glxa64 ',extractAfter(text{1}{2},' -i'));
+text{1}{2} = strcat(extractBefore(text{1}{2},' -i'),'./contrack_gen.glxa64 ',extractAfter(text{1}{2},' -i'));
 fclose(fid);
 fid = fopen(fullfile(scriptPath.folder,scriptPath.name),'w');
 fprintf(fid,'%s\n',text{:}{:});
@@ -82,6 +81,7 @@ fclose(fid);
 %% run scripts
 system(cmd);
 
+cd(topDir);
 %% clip fibers and create classification structure
 [whole_classification,mergedFG] = cleanFibers(seedroi);
 
