@@ -2,6 +2,7 @@
 #PBS -l nodes=1:ppn=8,walltime=6:00:00
 #PBS -N app-contract-optic-radiation
 
+# create csf mask
 if [ ! -f csf.nii.gz ]; then
 	time singularity exec -e docker://brainlife/mrtrix3:3.0_RC3 ./csf.sh
 fi
@@ -9,11 +10,20 @@ fi
 [ -z "$FREESURFER_LICENSE" ] && echo "Please set FREESURFER_LICENSE in .bashrc" && exit 1;
 echo $FREESURFER_LICENSE > license.txt
 
-time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./convert.sh
+# create hemisphere ribbons, ribbon, and visual area niftis in diffusion space
+if [ ! -f ribbon.nii.gz ]; then
+	time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./convert.sh
+fi
 
-time singularity exec -e docker://brainlife/fsl:latest ./mask.sh
+# mask visual area by hemisphere
+if [ ! -f varea.nii.gz ]; then
+	time singularity exec -e docker://brainlife/fsl:latest ./mask.sh
+fi
 
-time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/opticRadiationContrack
+# perform contrack tracking
+if [ ! -f track.tck ]; then
+	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/opticRadiationContrack
+fi
 
 # cleanup
 mkdir -p track
