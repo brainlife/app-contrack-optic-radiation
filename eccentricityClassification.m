@@ -44,7 +44,7 @@ for ifg = 1:length(whole_fg_classified)
             index(ii) = 0;
         end
     end
-    classification.index
+    classification.index;
 end
 
 % create new classification structure

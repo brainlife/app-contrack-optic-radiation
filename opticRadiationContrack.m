@@ -90,7 +90,7 @@ cd(topDir);
 whole_fg_classified = bsc_makeFGsFromClassification_v4(whole_classification,mergedFG);
 
 %% Eccentricity classification
-[fg_classified,classification] = eccentricityClassification(config,whole_fg_classified,mergedFG,whole_classification)
+[fg_classified,classification] = eccentricityClassification(config,whole_fg_classified,mergedFG,whole_classification);
 
 %% Save output
 save('output.mat','classification','fg_classified','-v7.3');
