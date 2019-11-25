@@ -81,7 +81,7 @@ fclose(fid);
 
 %% run scripts
 cd(scriptPath.folder);
-system(cmd);
+system(fullfile(scriptPath.folder,scriptPath.name));
 
 cd(topDir);
 %% clip fibers and create classification structure
