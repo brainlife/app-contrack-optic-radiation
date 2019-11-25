@@ -69,7 +69,7 @@ ctrParams.executeSh = 0;
 [cmd, ~] = ctrInitBatchTrack(ctrParams);
 
 % fix script for missing path to contrack c code
-scriptPath = dir('tmpSubj/dtiinit/dti/fibers/conTrack/OR/*.sh');
+scriptPath = dir(fullfile(topDir,'/tmpSubj/dtiinit/dti/fibers/conTrack/OR/*.sh'));
 fid = fopen(fullfile(scriptPath.folder,scriptPath.name));
 text = textscan(fid,'%s','delimiter','\n');
 text{1}{2} = strcat(extractBefore(text{1}{2},' -i'),'./contrack_gen.glxa64 ',extractAfter(text{1}{2},' -i'));
