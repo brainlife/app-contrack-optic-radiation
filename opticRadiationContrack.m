@@ -73,7 +73,7 @@ scriptPath = dir(fullfile(topDir,'/tmpSubj/dtiinit/dti/fibers/conTrack/OR/*.sh')
 contrackPath = [sprintf('%s/contrack_gen.glxa64',topDir) ' '];
 fid = fopen(fullfile(scriptPath.folder,scriptPath.name));
 text = textscan(fid,'%s','delimiter','\n');
-text{1}{2} = strcat(extractBefore(text{1}{2},' -i'),contrackPath,extractAfter(text{1}{2},' '));
+text{1}{2} = strcat(extractBefore(text{1}{2},' -i'),contrackPath,' ',extractAfter(text{1}{2},' '));
 fclose(fid);
 fid = fopen(fullfile(scriptPath.folder,scriptPath.name),'w');
 fprintf(fid,'%s\n',text{:}{:});
