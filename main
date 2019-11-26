@@ -20,22 +20,22 @@ if [ ! -f varea.nii.gz ]; then
 	time singularity exec -e docker://brainlife/fsl:latest ./mask.sh
 fi
 
-# perform contrack tracking
-if [ ! -f track.tck ]; then
-	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/opticRadiationContrack
-fi
-
-# cleanup
-mkdir -p track
-
-if [ -f track.tck ]; then
-	mv track.tck ./track/
-	mv output.mat ./wmc/classification.mat
-	mv tracts ./wmc/
-	mv output_fibercounts.txt ./wmc/
-	rm tmpSubj *.nii.gz* *.mif*
-	exit 0;
-else
-	echo "tracking failed"
-	exit 1;
-fi
+## perform contrack tracking
+#if [ ! -f track.tck ]; then
+#	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/opticRadiationContrack
+#fi
+#
+## cleanup
+#mkdir -p track
+#
+#if [ -f track.tck ]; then
+#	mv track.tck ./track/
+#	mv output.mat ./wmc/classification.mat
+#	mv tracts ./wmc/
+#	mv output_fibercounts.txt ./wmc/
+#	rm tmpSubj *.nii.gz* *.mif*
+#	exit 0;
+#else
+#	echo "tracking failed"
+#	exit 1;
+#fi
