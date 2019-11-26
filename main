@@ -28,7 +28,7 @@ fi
 # cleanup
 mkdir -p track
 
-if [ -f track.tck ]; then
+if [ -f ./track/track.tck ]; then
 	mv track.tck ./track/
 	mv output.mat ./wmc/classification.mat
 	mv ./tracts ./wmc/
