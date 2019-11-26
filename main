@@ -32,9 +32,9 @@ if [ -f track.tck ]; then
 	mv ./track.tck ./track/
 	mkdir ./wmc/tracts/
 	mv ./output.mat ./wmc/classification.mat
-	mv ./tracts ./wmc/tracts/
+	mv ./tracts/* ./wmc/tracts/
 	mv ./output_fibercounts.txt ./wmc/
-	rm -rf ./tmpSubj ./*.nii.gz* ./*.mif*
+	rm -rf ./tmpSubj ./*.nii.gz* ./*.mif* ./tracts
 	exit 0;
 else
 	echo "tracking failed"
