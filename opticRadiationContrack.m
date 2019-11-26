@@ -20,20 +20,14 @@ end
 
 % load my own config.json
 config = loadjson('config.json');
-seedroi = config.seed_roi;
 
-if seedroi == '008109'
-	hemi = 'left';
-else
-	hemi = 'right';
-end
+hemi = {'left','right'};
 
 topDir = pwd;
 baseDir = fullfile(pwd,'tmpSubj');
 
-
 %% generate .mat rois
-generateMatRois(config,seedroi);
+generateMatRois(config);
 
 %% generate batch parameters
 % params
@@ -47,8 +41,10 @@ ctrParams.roiDir = 'ROIs';
 ctrParams.subs = {'dtiinit'};
 
 % set rois and parameters
-ctrParams.roi1 = {sprintf('lgn_%s',hemi)};
-ctrParams.roi2 = {'varea'};
+ctrParams.roi1 = {'lgn_left','lgn_left','lgn_left',...
+	'lgn_right','lgn_right','lgn_right'};
+ctrParams.roi2 = {'Ecc0to5_left','Ecc5to15_left','Ecc15to90_left',...
+    'Ecc0to5_right','Ecc5to15_right','Ecc15to90_right'};
 ctrParams.nSamples = config.count;
 ctrParams.maxNodes = config.maxnodes;
 ctrParams.minNodes = config.minnodes; % defalt: 10
@@ -84,13 +80,10 @@ system(cmd);
 
 cd(topDir);
 %% clip fibers and create classification structure
-[whole_classification,mergedFG] = cleanFibers(seedroi);
+[classification,mergedFG] = cleanFibers();
 
 %% make fg classified structure for eccentricity classification
-whole_fg_classified = bsc_makeFGsFromClassification_v4(whole_classification,mergedFG);
-
-%% Eccentricity classification
-[fg_classified,classification] = eccentricityClassification(config,whole_fg_classified,mergedFG,whole_classification);
+fg_classified = bsc_makeFGsFromClassification_v4(classification,mergedFG);
 
 %% Save output
 save('output.mat','classification','fg_classified','-v7.3');

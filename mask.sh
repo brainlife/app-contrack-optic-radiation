@@ -9,4 +9,4 @@ fslmaths $eccentricity -mul lh.ribbon.nii.gz eccentricity_left.nii.gz
 # make right hemisphere eccentricity
 fslmaths $eccentricity -mul rh.ribbon.nii.gz eccentricity_right.nii.gz
 
-fslmaths csf.nii.gz csf_bin.nii.gz
+fslmaths csf.nii.gz -bin csf_bin.nii.gz
