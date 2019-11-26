@@ -3,7 +3,7 @@ function [classification,mergedFG] = cleanFibers()
 % variables
 orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','*.pdb'));
 
-hemis = {'left','right'}
+hemis = {'left','right'};
 
 %% Generate NOT ROIs
 % CSF ROI
@@ -12,7 +12,7 @@ csfROI = bsc_loadAndParseROI('csf_bin.nii.gz');
 %% Load Optic radiations and clip for cleaning
 % load and clip optic radiations
 for ifg = 1:length(orFibersDir)
-	fgPath{ifg} = {fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name)};
+	fgPath{ifg} = fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name);
 end
 
 % need specific modification to how pdb fgs are loaded
@@ -37,13 +37,13 @@ mergedFG.params{2}{7} = sprintf('total_count: %s',num2str(length(mergedFG.fibers
 dtiExportFibersMrtrix_tracks(mergedFG,'track.tck');
 
 % clip hemispheres and CSF for OR
-for ifg = 1:length(classification)
+for ifg = 1:length(classification.names)
     tractFG.name = classification.names{ifg};
     tractFG.colorRgb = mergedFG.colorRgb;
     display(sprintf('%s',tractFG.name))
     indexes = find(classification.index == ifg);
     tractFG.fibers = mergedFG.fibers(indexes);
-    [~,~,keep,~] = dtiIntersectFibersWithRoi([],'not',[],csfRoi,tractFG);
+    [~,~,keep,~] = dtiIntersectFibersWithRoi([],'not',[],csfROI,tractFG);
     % set indices of streamlines that intersect the not ROI to 0 as if they
     % have never been classified
     classification.index(indexes(~keep)) = 0;
