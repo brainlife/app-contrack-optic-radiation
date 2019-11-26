@@ -38,7 +38,7 @@ ctrParams.dtDir = 'dti';
 ctrParams.roiDir = 'ROIs';
 
 % pick up subjects
-ctrParams.subs = 'dtiinit';
+ctrParams.subs = {'dtiinit'};
 
 % set rois and parameters
 ctrParams.roi1 = {'lgn_left','lgn_left','lgn_left',...
