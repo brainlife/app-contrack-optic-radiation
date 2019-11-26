@@ -34,7 +34,7 @@ if [ -f track.tck ]; then
 	mv ./output.mat ./wmc/classification.mat
 	mv ./tracts ./wmc/tracts/
 	mv ./output_fibercounts.txt ./wmc/
-	rm ./tmpSubj ./*.nii.gz* ./*.mif*
+	rm -rf ./tmpSubj ./*.nii.gz* ./*.mif*
 	exit 0;
 else
 	echo "tracking failed"
