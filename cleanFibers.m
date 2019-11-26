@@ -36,13 +36,13 @@ dtiExportFibersMrtrix_tracks(mergedFG,'track.tck');
 
 % clip hemispheres and CSF for OR
 for ifg = 1:length(classification.names)
-    tractFG.name = classification.names{ifg};
-    tractFG.colorRgb = mergedFG.colorRgb;
-    display(sprintf('%s',tractFG.name))
-    indexes = find(classification.index == ifg);
-    tractFG.fibers = mergedFG.fibers(indexes);
-    [~,~,keep,keepID] = dtiIntersectFibersWithRoi([],'not',[],csfROI,tractFG);
-    % set indices of streamlines that intersect the not ROI to 0 as if they
-    % have never been classified
-    classification.index(indexes(~keep)) = 0;
+	tractFG.name = classification.names{ifg};
+	tractFG.colorRgb = mergedFG.colorRgb;
+	display(sprintf('%s',tractFG.name))
+	indexes = find(classification.index == ifg);
+	tractFG.fibers = mergedFG.fibers(indexes);
+	[~,~,keep,keepID] = dtiIntersectFibersWithRoi([],'not',[],csfROI,tractFG);
+	% set indices of streamlines that intersect the not ROI to 0 as if they
+	% have never been classified
+	classification.index(indexes(~keep)) = 0;
 end
