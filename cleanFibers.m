@@ -4,8 +4,24 @@ function [classification,mergedFG] = cleanFibers()
 orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','*.pdb'));
 
 %% Generate NOT ROIs
+% hemisphere
+hemi = {'left','right'};
+
+for hh = 1:length(hemi)
+	if strcmp(hemi{hh},'left')
+		hemisphereROI.(hemi{hh}) = bsc_loadAndParseROI('rh.ribonn.nii.gz');
+	else
+		hemisphereROI.(hemi{hh}) = bsc_loadAndParseROI('lh.ribbon.nii.gz');
+	end
+end
+
 % CSF ROI
 csfROI = bsc_loadAndParseROI('csf_bin.nii.gz');
+
+% NOT ROIs
+for hh = 1:length(hemi)
+	Not.(hemi{hh}) = bsc_mergeROIs(hemisphereROI.(hemi{hh}),csfROI);
+end
 
 %% Load Optic radiations and clip for cleaning
 % load and clip optic radiations
@@ -41,7 +57,12 @@ for ifg = 1:length(classification.names)
 	display(sprintf('%s',tractFG.name))
 	indexes = find(classification.index == ifg);
 	tractFG.fibers = mergedFG.fibers(indexes);
-	[keep] = dtiIntersectFibersWithRoi_bl([],'not',[],csfROI,tractFG);
+	if strcmp(extractBefore(tractFG.name,'-'),'left')
+	    [~,~,keep,~] = dtiIntersectFibersWithRoi([],'not',[],Not.left,tractFG);
+	else
+	    [~,~,keep,~] = dtiIntersectFibersWithRoi([],'not',[],Not.right,tractFG);
+	end
+
 	% set indices of streamlines that intersect the not ROI to 0 as if they
 	% have never been classified
 	classification.index(indexes(~keep)) = 0;
