@@ -3,8 +3,6 @@ function [classification,mergedFG] = cleanFibers()
 % variables
 orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','*.pdb'));
 
-hemis = {'left','right'};
-
 %% Generate NOT ROIs
 % CSF ROI
 csfROI = bsc_loadAndParseROI('csf_bin.nii.gz');
