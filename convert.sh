@@ -9,8 +9,8 @@ varea=`jq -r '.varea' config.json`
 eccentricity=`jq -r '.eccentricity' config.json`
 hemi="lh rh"
 
-mkdir tmpSubj
-cp -R ${dtiinit} ./tmpSubj/
+mkdir tmpSubj tmpSubj/dtiinit/
+cp -R ${dtiinit} ./tmpSubj/dtiinit/
 
 if [[ ! ${dtiinit} == "null" ]]; then
         export dwi=$dtiinit/`jq -r '.files.alignedDwRaw' $dtiinit/dt6.json`
