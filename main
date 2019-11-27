@@ -16,7 +16,7 @@ if [ ! -f ribbon.nii.gz ]; then
 fi
 
 # mask visual area by hemisphere
-if [ ! -f varea.nii.gz ]; then
+if [ ! -f ribbon_right.nii.gz ]; then
 	time singularity exec -e docker://brainlife/fsl:latest ./mask.sh
 fi
 
@@ -26,17 +26,17 @@ if [ ! -f track.tck ]; then
 fi
 
 # cleanup
-#mkdir -p track
-#
-#if [ -f track.tck ]; then
-#	mkdir ./wmc ./wmc/tracts
-#	mv ./track.tck ./track/
-#	mv ./output.mat ./wmc/classification.mat
-#	mv ./tracts/* ./wmc/
-#	mv ./output_fibercounts.txt ./wmc/
-#	rm tmpSubj *.nii.gz* *.mif* ./bin ./logs
-#	exit 0;
-#else
-#	echo "tracking failed"
-#	exit 1;
-#fi
+mkdir -p track
+
+if [ -f track.tck ]; then
+	mkdir ./wmc ./wmc/tracts
+	mv ./track.tck ./track/
+	mv ./output.mat ./wmc/classification.mat
+	mv ./tracts/* ./wmc/tracts/
+	mv ./output_fibercounts.txt ./wmc/
+	rm -rf tmpSubj *.nii.gz* *.mif* ./bin ./logs ./tracts license.txt
+	exit 0;
+else
+	echo "tracking failed"
+	exit 1;
+fi

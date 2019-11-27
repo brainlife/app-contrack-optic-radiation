@@ -18,6 +18,7 @@ if ~isdeployed
     addpath(genpath('/usr/local/wma_tools'))
 end
 
+
 % load my own config.json
 config = loadjson('config.json');
 
