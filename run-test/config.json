@@ -1,0 +1,13 @@
+{
+	"dtiinit":	"/N/u/bacaron/Carbonate/Desktop/test/dtiinit/",
+	"t1":	"/N/u/bacaron/Carbonate/Desktop/test/anat/t1.nii.gz",
+	"rois":	"/N/u/bacaron/Carbonate/Desktop/test/rois-dtiinit/rois/",
+	"eccentricity":	"/N/u/bacaron/Carbonate/Desktop/test/prf/eccentricity.nii.gz",
+	"varea":	"/N/u/bacaron/Carbonate/Desktop/test/prf/varea.nii.gz",
+	"mask":	"/N/u/bacaron/Carbonate/Desktop/test/5tt/mask.nii.gz",
+	"freesurfer":	"/N/u/bacaron/Carbonate/Desktop/test/output/",
+	"count":	500,
+	"maxnodes":	200,
+	"minnodes":	50,
+	"stepsize":	1
+}

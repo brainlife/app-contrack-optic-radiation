@@ -1,0 +1,14 @@
+{
+	"dtiinit":	"/data/dtiinit/",
+	"t1":	"/data/t1.nii.gz",
+	"rois":	"/data/rois-dtiinit/rois/",
+	"eccentricity":	"/data/prf/eccentricity.nii.gz",
+	"varea":	"/data/prf/varea.nii.gz",
+	"mask":	"/data/5tt/mask.nii.gz",
+	"freesurfer":	"/data/output/",
+	"count":	500,
+	"seed_roi":	"008109",
+	"maxnodes":	200,
+	"minnodes":	50,
+	"stepsize":	1
+}
