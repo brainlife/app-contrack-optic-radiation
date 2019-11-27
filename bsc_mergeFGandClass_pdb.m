@@ -1,4 +1,4 @@
-function [mergedFG, mergedClassification]=bsc_mergeFGandClass(inputFGs,inputClassifications)
+function [mergedFG, mergedClassification]=bsc_mergeFGandClass_pdb(inputFGs,inputClassifications)
 %% [mergedFG, mergedClassification]=bsc_mergeFGandClass(inputFGs,inputClassifications)
 %
 % Takes in some number of fg structures (and classification structures) and
