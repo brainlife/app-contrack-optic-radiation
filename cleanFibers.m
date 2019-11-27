@@ -9,9 +9,9 @@ hemi = {'left','right'};
 
 for hh = 1:length(hemi)
 	if strcmp(hemi{hh},'left')
-		hemisphereROI.(hemi{hh}) = bsc_loadAndParseROI('rh.ribonn.nii.gz');
+		hemisphereROI.(hemi{hh}) = bsc_loadAndParseROI('ribbon_right.nii.gz');
 	else
-		hemisphereROI.(hemi{hh}) = bsc_loadAndParseROI('lh.ribbon.nii.gz');
+		hemisphereROI.(hemi{hh}) = bsc_loadAndParseROI('ribbon_left.nii.gz');
 	end
 end
 
@@ -58,9 +58,9 @@ for ifg = 1:length(classification.names)
 	indexes = find(classification.index == ifg);
 	tractFG.fibers = mergedFG.fibers(indexes);
 	if strcmp(extractBefore(tractFG.name,'-'),'left')
-	    [~,~,keep,~] = dtiIntersectFibersWithRoi([],'not',[],Not.left,tractFG);
+	    [keep] = dtiIntersectFibersWithRoi_bl([],'not',[],Not.left,tractFG);
 	else
-	    [~,~,keep,~] = dtiIntersectFibersWithRoi([],'not',[],Not.right,tractFG);
+	    [keep] = dtiIntersectFibersWithRoi_bl([],'not',[],Not.right,tractFG);
 	end
 
 	% set indices of streamlines that intersect the not ROI to 0 as if they

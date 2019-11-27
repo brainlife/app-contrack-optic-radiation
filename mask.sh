@@ -10,3 +10,6 @@ fslmaths $eccentricity -mul lh.ribbon.nii.gz eccentricity_left.nii.gz
 fslmaths $eccentricity -mul rh.ribbon.nii.gz eccentricity_right.nii.gz
 
 fslmaths csf.nii.gz -bin csf_bin.nii.gz
+
+fslmaths ribbon.nii.gz -thr 40 -bin ribbon_right.nii.gz
+fslmaths ribbon.nii.gz -uthr 10 -bin ribbon_left.nii.gz
