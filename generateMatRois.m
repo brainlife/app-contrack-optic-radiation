@@ -6,7 +6,7 @@ if seedroi == '008109'
 else
 	hemi = 'right';
 end
-lgn = niftiRead(fullfile(roisDir,sprintf('ROI%s.nii.gz',seedroi));
+lgn = niftiRead(fullfile(roisDir,sprintf('ROI%s.nii.gz',seedroi)));
 
 % set local rois directory to save .mat files
 rois = fullfile('tmpSubj','dtiinit','ROIs/');
