@@ -25,11 +25,11 @@ roiLgn = dtiRoiFromNifti(niiName,0,fullfile(rois,sprintf('lgn_%s.mat',hemi)),...
 % inflation? TO DO LATER
 
 %% visual area ROIs
-varea = niftiRead('varea.nii.gz');
+v1 = niftiRead(sprintf('v1_%s.nii.gz',hemi));
 
 %% save the ROI
 % mat
-tmp = varea;
+tmp = v1;
 matName =  [rois,extractBefore(tmp.fname,'.nii.gz'),'.mat'];
 binary = false; save = true;
 dtiRoiFromNifti(tmp.fname,0,matName,'mat',binary,save);

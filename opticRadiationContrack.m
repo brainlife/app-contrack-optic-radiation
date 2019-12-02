@@ -48,7 +48,7 @@ ctrParams.subs = {'dtiinit'};
 
 % set rois and parameters
 ctrParams.roi1 = {sprintf('lgn_%s',hemi)};
-ctrParams.roi2 = {'v1'};
+ctrParams.roi2 = {sprintf('v1_%s',hemi)};
 ctrParams.nSamples = config.count;
 ctrParams.maxNodes = config.maxnodes;
 ctrParams.minNodes = config.minnodes; % defalt: 10
