@@ -16,9 +16,9 @@ csfROI = bsc_loadAndParseROI('csf_bin.nii.gz');
 % Planar ROI
 % load reference nifti for planar ROI
 if strcmp(hemi,'left')
-    hemisphereROI = bsc_loadAndParseROI('rh.ribbon.nii.gz');
+    hemisphereROI = bsc_loadAndParseROI('ribbon_right.nii.gz');
 else
-    hemisphereROI = bsc_loadAndParseROI('lh.ribbon.nii.gz');
+    hemisphereROI = bsc_loadAndParseROI('ribbon_left.nii.gz');
 end
 
 % create not ROI
@@ -59,11 +59,7 @@ for ifg = 1:length(classification)
     display(sprintf('%s',tractFG.name))
     indexes = find(classification.index == ifg);
     tractFG.fibers = mergedFG.fibers(indexes);
-    if strcmp(extractBefore(tractFG.name,'-'),'left')
-        [~,~,keep,~] = dtiIntersectFibersWithRoi([],'not',[],Not,tractFG);
-    else
-        [~,~,keep,~] = dtiIntersectFibersWithRoi([],'not',[],Not,tractFG);
-    end
+    [~, keep] = wma_SegmentFascicleFromConnectome(tractFG, [{Not} ], {'not' }, ['dud']);
     % set indices of streamlines that intersect the not ROI to 0 as if they
     % have never been classified
     classification.index(indexes(~keep)) = 0;

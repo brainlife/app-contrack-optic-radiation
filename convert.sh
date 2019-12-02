@@ -1,27 +1,17 @@
 #!/bin/bash
 
-#dwi=$(jq -r .dwi config.json)
-#bvecs=`jq -r '.bvecs' config.json`
-#bvals=`jq -r '.bvals' config.json`
-dtiinit=`jq -r '.dtiinit' config.json`
 freesurfer=`jq -r '.freesurfer' config.json`
-varea=`jq -r '.varea' config.json`
-eccentricity=`jq -r '.eccentricity' config.json`
-hemi="lh rh"
+dtiinit=`jq -r '.dtiinit' config.json`
 
-mkdir tmpSubj tmpSubj/dtiinit/
-cp -R ${dtiinit} ./tmpSubj/dtiinit/
+mkdir tmpSubj tmpSubj/dtiinit
+cp -R ${dtiinit} ./tmpSubj/dtiinit
 
-if [[ ! ${dtiinit} == "null" ]]; then
-        export dwi=$dtiinit/`jq -r '.files.alignedDwRaw' $dtiinit/dt6.json`
-fi
+mri_vol2vol --mov csf_pre.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin_noMEC.nii.gz --regheader --o csf.nii.gz
 
-for HEMI in $hemi
-do
+mri_vol2vol --mov ${freesurfer}/mri/lh.ribbon.mgz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin_noMEC.nii.gz --regheader --o lh.ribbon.nii.gz
 
-	mri_label2vol --seg $freesurfer/mri/${HEMI}.ribbon.mgz --temp ${dwi} --regheader $freesurfer/mri/${HEMI}.ribbon.mgz --o ${HEMI}.ribbon.nii.gz
-done
+mri_vol2vol --mov ${freesurfer}/mri/rh.ribbon.mgz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin_noMEC.nii.gz --regheader --o rh.ribbon.nii.gz
 
-mri_label2vol --seg ${varea} --temp ${dwi} --regheader ${varea} --o varea_whole.nii.gz
+mri_vol2vol --mov ${freesurfer}/mri/ribbon.mgz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin_noMEC.nii.gz --regheader --o ribbon.nii.gz
 
-mri_label2vol --seg $freesurfer/mri/ribbon.mgz --temp ${dwi} --regheader $freesurfer/mri/ribbon.mgz --o ribbon.nii.gz
+mri_vol2vol --mov ${freesurfer}/mri/aparc.a2009s+aseg.mgz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin_noMEC.nii.gz --regheader --o aparc.a2009s.aseg.nii.gz

@@ -3,10 +3,10 @@ function [] = generateMatRois(config,seedroi)
 roisDir = config.rois;
 if seedroi == '008109'
 	hemi = 'left';
-	lgn = niftiRead(fullfile(roisDir,'ROI008109.nii.gz'));
+	lgn = niftiRead(fullfile('v1_left.nii.gz'));
 else
 	hemi = 'right';
-	lgn = niftiRead(fullfile(roisDir,'ROI008209.nii.gz'));
+	lgn = niftiRead(fullfile('v1_right.nii.gz'));
 end
 
 % set local rois directory to save .mat files

@@ -16,7 +16,7 @@ if [ ! -f ribbon.nii.gz ]; then
 fi
 
 # mask visual area by hemisphere
-if [ ! -f varea.nii.gz ]; then
+if [ ! -f csf_bin.nii.gz ]; then
 	time singularity exec -e docker://brainlife/fsl:latest ./mask.sh
 fi
 

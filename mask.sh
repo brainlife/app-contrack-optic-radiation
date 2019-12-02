@@ -2,15 +2,17 @@
 
 rois=`jq -r '.rois' config.json`
 roi1=`jq -r '.seed_roi' config.json`
-varea=`jq -r '.varea' config.json`
+roi2=`jq -r '.term_roi' config.json`
+eccentricity=`jq -r '.eccentricity' config.json`
 
-fslmaths varea_whole.nii.gz -bin varea_bin.nii.gz
-if [[ ${roi1} == 008109 ]]; then
+if [[ ${roi1} == '008109' ]]; then
 	# make left hemisphere eccentricity
-	fslmaths varea_bin.nii.gz -mul lh.ribbon.nii.gz varea.nii.gz
+	fslmaths ribbon.nii.gz -thr 40 -bin ribbon_right.nii.gz
+	fslmaths ${roi2} -mul lh.ribbon.nii.gz v1_left.nii.gz
 else
 	# make right hemisphere eccentricity
-	fslmaths varea_bin.nii.gz -mul rh.ribbon.nii.gz varea.nii.gz
+	fslmaths ribbon.nii.gz -uthr 10 -bin ribbon_left.nii.gz
+	fslmaths ${roi2} -mul rh.ribbon.nii.gz v1_right.nii.gz
 fi
 
-fslmaths csf.nii.gz csf_bin.nii.gz
+fslmaths csf.nii.gz -bin csf_bin.nii.gz
