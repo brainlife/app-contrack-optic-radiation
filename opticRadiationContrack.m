@@ -84,13 +84,37 @@ system(cmd);
 
 cd(topDir);
 %% clip fibers and create classification structure
-[whole_classification,mergedFG] = cleanFibers(seedroi);
+orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','*.pdb'));
 
-%% make fg classified structure for eccentricity classification
+fgPath = {fullfile(orFibersDir(1).folder,orFibersDir(1).name)};
+
+% need specific modification to how pdb fgs are loaded
+[mergedFG,whole_classification] = bsc_mergeFGandClass_pdb(fgPath);
+
+whole_classification.names = {sprintf('%s-optic-radiation',hemi)};
+
+mergedFG.name = sprintf('%s_optic_radiation',hemi);
+% find better way to index this
+% fake mrtrix header
+mergedFG.params = {};
+mergedFG.params{1} = 'mrtrix_header';
+mergedFG.params{2}{1} = 'mrtrix tracks    ';
+mergedFG.params{2}{2} = 'mrtrix_version: 3.0_RC3';
+mergedFG.params{2}{3} = 'timestamp: 1573277529.4060957432';
+mergedFG.params{2}{4} = 'datatype: Float32LE';
+mergedFG.params{2}{5} = 'file: . 160';
+mergedFG.params{2}{6} = sprintf('count: %s',num2str(length(mergedFG.fibers)));
+mergedFG.params{2}{7} = sprintf('total_count: %s',num2str(length(mergedFG.fibers)));
+
+% save tck
+dtiExportFibersMrtrix_tracks(mergedFG,'track.tck');
+
+% make whole OR fg_classified for cleaning
 whole_fg_classified = bsc_makeFGsFromClassification_v4(whole_classification,mergedFG);
+[clean_classification] = cleanFibers(whole_classification,mergedFG,hemi);
 
 %% Eccentricity classification
-[fg_classified,classification] = eccentricityClassification(config,whole_fg_classified,mergedFG,whole_classification);
+[fg_classified,classification] = eccentricityClassification(config,whole_fg_classified,mergedFG,clean_classification,hemi);
 
 %% Save output
 save('output.mat','classification','fg_classified','-v7.3');

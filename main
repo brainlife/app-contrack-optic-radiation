@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=8,walltime=8:00:00
+#PBS -l nodes=1:ppn=8,walltime=1:00:00
 #PBS -N app-contract-optic-radiation
 
 # create csf mask
@@ -17,7 +17,7 @@ fi
 
 # mask visual area by hemisphere
 if [ ! -f csf_bin.nii.gz ]; then
-	time singularity exec -e docker://brainlife/fsl:latest ./mask.sh
+	time singularity exec -e docker://brainlife/fsl:latest ./mask_new.sh
 fi
 
 # perform contrack tracking
@@ -28,15 +28,15 @@ fi
 # cleanup
 mkdir -p track
 
-#if [ -f track.tck ]; then
-#	mv ./track.tck ./track/
-#	mkdir ./wmc ./wmc/tracts/
-#	mv ./output.mat ./wmc/classification.mat
-#	mv ./tracts/* ./wmc/tracts/
-#	mv ./output_fibercounts.txt ./wmc/
-#	rm -rf ./tmpSubj ./*.nii.gz* ./*.mif* ./tracts ./bin ./logs
-#	exit 0;
-#else
-#	echo "tracking failed"
-#	exit 1;
-#fi
+if [ -f track.tck ]; then
+	mv ./track.tck ./track/
+	mkdir ./wmc ./wmc/tracts/
+	mv ./output.mat ./wmc/classification.mat
+	mv ./tracts/* ./wmc/tracts/
+	mv ./output_fibercounts.txt ./wmc/
+	rm -rf ./tmpSubj ./*.nii.gz* ./*.mif* ./tracts ./bin ./logs
+	#exit 0;
+else
+	echo "tracking failed"
+	#exit 1;
+fi
