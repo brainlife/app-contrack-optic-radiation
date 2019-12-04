@@ -26,15 +26,12 @@ csfROI = bsc_loadAndParseROI('csf_bin.nii.gz');
 if strcmp(hemi,'left')
     thal = bsc_roiFromAtlasNums(referenceNifti,[thalLUT.left ],1);
     posteriorThalLimit = bsc_planeFromROI_v2([thal],'posterior',referenceNifti);
-    lateralThalLimit = bsc_planeFromROI_v2([thal],'lateral',referenceNifti);
-    thalLatPost = bsc_modifyROI_v2(referenceNifti,lateralThalLimit,posteriorThalLimit,'anterior');
+    
+    posteriorThalLimit = bsc_planeFromROI_v2([thal],'posterior',referenceNifti);
+    thalLatPost = bsc_modifyROI_v2(referenceNifti,lateral
     hemisphereROI = bsc_roiFromAtlasNums(referenceNifti,[exclusionROIs.left ],1);
     %hemisphereROI = bsc_loadAndParseROI('ribbon_right.nii.gz');
 else
-    thal = bsc_roiFromAtlasNums(referenceNifti,[thalLUT.right ],1);
-    posteriorThalLimit = bsc_planeFromROI_v2([thal],'posterior',referenceNifti);
-    lateralThalLimit = bsc_planeFromROI_v2([thal],'lateral',referenceNifti);
-    thalLatPost = bsc_modifyROI_v2(referenceNifti,lateralThalLimit,posteriorThalLimit,'anterior');
     hemisphereROI = bsc_roiFromAtlasNums(referenceNifti,[exclusionROIs.right ],1);
     %hemisphereROI = bsc_loadAndParseROI('ribbon_left.nii.gz');
 end
@@ -49,7 +46,7 @@ for ifg = 1:length(whole_classification)
     tractFG.colorRgb = mergedFG.colorRgb;
     display(sprintf('%s',tractFG.name))
     tractFG.fibers = mergedFG.fibers;
-    [~, keep] = wma_SegmentFascicleFromConnectome(tractFG, [{Not} {thalLatPost} ], {'not','and' }, ['dud']);
+    [~, keep] = wma_SegmentFascicleFromConnectome(tractFG, [{Not} ], {'not' }, ['dud']);
     % set indices of streamlines that intersect the not ROI to 0 as if they
     % have never been classified
     classification.index = keep;
