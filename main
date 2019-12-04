@@ -21,22 +21,22 @@ if [ ! -f csf_bin.nii.gz ]; then
 fi
 
 # perform contrack tracking
-#if [ ! -f track.tck ]; then
-#	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/opticRadiationContrack
-#fi
+if [ ! -f track.tck ]; then
+	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/opticRadiationContrack
+fi
 
 # cleanup
-#mkdir -p track
-#
-#if [ -f track.tck ]; then
-#	mv ./track.tck ./track/
-#	mkdir ./wmc ./wmc/tracts/
-#	mv ./output.mat ./wmc/classification.mat
-#	mv ./tracts/* ./wmc/tracts/
-#	mv ./output_fibercounts.txt ./wmc/
-#	rm -rf ./tmpSubj ./*.nii.gz* ./*.mif* ./tracts ./bin ./logs
-#	exit 0;
-#else
-#	echo "tracking failed"
-#	exit 1;
-#fi
+mkdir -p track
+
+if [ -f track.tck ]; then
+	mv ./track.tck ./track/
+	mkdir ./wmc ./wmc/tracts/
+	mv ./output.mat ./wmc/classification.mat
+	mv ./tracts/* ./wmc/tracts/
+	mv ./output_fibercounts.txt ./wmc/
+	rm -rf ./tmpSubj ./*.nii.gz* ./*.mif* ./tracts ./bin ./logs
+	exit 0;
+else
+	echo "tracking failed"
+	exit 1;
+fi
