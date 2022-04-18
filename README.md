@@ -99,9 +99,9 @@ This App only requires [singularity](https://www.sylabs.io/singularity/) to run.
 
 - matlab: https://www.mathworks.com/products/matlab.html
 - vistasoft: https://github.com/vistalab/vistasoft
-- https://github.com/francopestilli/encode
+- encode: https://github.com/francopestilli/encode
 - jsonlab: https://github.com/fangq/jsonlab
-- afq: https://github.com/yeatmanlab/AFQ
+- AFQ: https://github.com/yeatmanlab/AFQ
 - wma_tools: https://github.com/DanNBullock/wma_tools
 
 #### MIT Copyright (c) 2020 brainlife.io The University of Texas at Austin and Indiana University
