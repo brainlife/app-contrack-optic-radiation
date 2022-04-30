@@ -1,0 +1,23 @@
+/N/u/brlife/git/vistasoft
+commit fff02a6fea0c84f2df6cb497ed406fb7866b2f72
+Author: jwinawer <jonathan.winawer@nyu.edu>
+Date:   Mon May 11 19:52:00 2020 -0400
+
+    in the case where the requested coords are the same as the full set of coords in the view structure, return without searching to save time
+/N/u/brlife/git/jsonlab
+commit 474d8c824800b5f2109c08f989085cb961acdbe3
+Merge: ae7a5d9 38b24fb
+Author: Qianqian Fang <fangqq@gmail.com>
+Date:   Wed Sep 6 13:01:57 2017 -0400
+
+    Merge pull request #41 from dasantonym/master
+    
+    added package.json to be able to intall via npm package manager
+/N/u/brlife/git/wma_tools
+commit f989c66dbfcc0bb943e9f1ed0954a6d3b52ab32a
+Author: Daniel Bullock <dnbulloc@iu.edu>
+Date:   Mon Jun 8 15:07:08 2020 -0400
+
+    fixed innacurate coordinate assumption
+    added abs to take care of both negative case for borders
+/N/u/brlife/git/AFQ

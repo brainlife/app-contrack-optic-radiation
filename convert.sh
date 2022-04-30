@@ -2,7 +2,7 @@
 
 rois=`jq -r '.rois' config.json`
 lgn=`jq -r '.lgn' config.json`
-prf=`jq -r '.prf' config.json`
+eccentricity=`jq -r '.eccentricity' config.json`
 v1=`jq -r '.v1' config.json`
 freesurfer=`jq -r '.freesurfer' config.json`
 dtiinit=`jq -r '.dtiinit' config.json`
@@ -10,7 +10,7 @@ hemis="left right"
 
 mkdir tmpSubj tmpSubj/dtiinit
 cp -R ${dtiinit}/* ./tmpSubj/dtiinit
-cp -R ${prf}/eccentricity.nii.gz ./eccentricity.nii.gz
+cp -R ${eccentricity} ./eccentricity.nii.gz
 
 # convert hemispheric ribbons
 for hemi in ${hemis}

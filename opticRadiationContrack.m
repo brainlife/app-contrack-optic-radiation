@@ -10,6 +10,7 @@ if ~isdeployed
     addpath(genpath('/N/u/brlife/git/jsonlab'))
     addpath(genpath('/N/u/brlife/git/spm'))
     addpath(genpath('/N/u/brlife/git/wma_tools'))
+    addpath(genpath('/N/u/brlife/git/AFQ'))
 
     %for old VM
     addpath(genpath('/usr/local/vistasoft'))
