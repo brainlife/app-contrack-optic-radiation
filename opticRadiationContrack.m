@@ -1,5 +1,6 @@
 function [] = opticRadiationContrack()
 
+%% load packages
 if ~isdeployed
     disp('loading path')
 
@@ -11,29 +12,35 @@ if ~isdeployed
     addpath(genpath('/N/u/brlife/git/wma_tools'))
 
     %for old VM
-    addpath(genpath('/usr/local/vistasoft'))
-    addpath(genpath('/usr/local/encode'))
-    addpath(genpath('/usr/local/jsonlab'))
-    addpath(genpath('/usr/local/spm'))
-    addpath(genpath('/usr/local/wma_tools'))
+%     addpath(genpath('/usr/local/vistasoft'))
+%     addpath(genpath('/usr/local/encode'))
+%     addpath(genpath('/usr/local/jsonlab'))
+%     addpath(genpath('/usr/local/spm'))
+%     addpath(genpath('/usr/local/wma_tools'))
+%     addpath(genpath('/usr/local/AFQ'))
+
+    addpath(genpath('/media/brad/Data/git/vistasoft'))
+    addpath(genpath('/media/brad/Data/git/encode'))
+    addpath(genpath('/media/brad/Data/git/jsonlab'))
+    addpath(genpath('/media/brad/Data/git/spm'))
+    addpath(genpath('/media/brad/Data/git/wma_tools'))
+    addpath(genpath('/media/brad/Data/git/AFQ'))
 end
 
-% load my own config.json
+%% config and top variables
+% load config.json
 config = loadjson('config.json');
-seedroi = config.seed_roi;
 
-if seedroi == '008109'
-	hemi = 'left';
-else
-	hemi = 'right';
-end
+hemi = {'left','right'};
 
 topDir = pwd;
 baseDir = fullfile(pwd,'tmpSubj');
-
+% tractNames = split(config.track_names);
+MinDegree = str2num(config.minDegree);
+MaxDegree = str2num(config.maxDegree);
 
 %% generate .mat rois
-generateMatRois(config,seedroi);
+generateMatRois(config,MinDegree,MaxDegree);
 
 %% generate batch parameters
 % params
@@ -47,12 +54,20 @@ ctrParams.roiDir = 'ROIs';
 ctrParams.subs = {'dtiinit'};
 
 % set rois and parameters
-ctrParams.roi1 = {sprintf('lgn_%s',hemi)};
-ctrParams.roi2 = {sprintf('v1_%s',hemi)};
-ctrParams.nSamples = config.count;
-ctrParams.maxNodes = config.maxnodes;
-ctrParams.minNodes = config.minnodes; % defalt: 10
-ctrParams.stepSize = config.stepsize; % default: 1
+j=1;
+for h = 1:length(hemi)
+    for i = 1:length(MinDegree)
+        ctrParams.roi1{j} = sprintf('lgn_%s',hemi{h});
+        ctrParams.roi2{j} = sprintf('Ecc%sto%s_%s',num2str(MinDegree(i)),num2str(MaxDegree(i)),hemi{h});
+        j=j+1;
+    end
+end
+% ctrParams.roi1 = 'lgn_left';
+% ctrParams.roi2 = 'Ecc7to90_left';
+ctrParams.nSamples = 10000;
+ctrParams.maxNodes = config.maxNodes;
+ctrParams.minNodes = config.minNodes; % defalt: 10
+ctrParams.stepSize = config.stepSize; % default: 1
 ctrParams.scrDir = fullfile(pwd,'bin');
 mkdir(ctrParams.scrDir);
 ctrParams.logDir = fullfile(pwd,'logs');
@@ -68,56 +83,32 @@ ctrParams.executeSh = 0;
 % make contrack scripts
 [cmd, ~] = ctrInitBatchTrack(ctrParams);
 
-% fix script for missing path to contrack c code
-scriptPath = dir(fullfile(topDir,'/tmpSubj/dtiinit/dti/fibers/conTrack/OR/*.sh'));
-contrackPath = [sprintf('%s/contrack_gen.glxa64',topDir) ' '];
-fid = fopen(fullfile(scriptPath.folder,scriptPath.name));
-text = textscan(fid,'%s','delimiter','\n');
-text{1}{2} = strcat(extractBefore(text{1}{2},' -i'),contrackPath,' -i',extractAfter(text{1}{2},' -i'));
-fclose(fid);
-fid = fopen(fullfile(scriptPath.folder,scriptPath.name),'w');
-fprintf(fid,'%s\n',text{:}{:});
-fclose(fid);
+% fix script for missing path to contrack c code: NEED TO POTENTIALLY DEBUG
+% scriptPath = dir(fullfile(topDir,'/tmpSubj/dtiinit/dti/fibers/conTrack/OR/*.sh'));
+% contrackPath = [sprintf('%s/contrack_gen.glxa64',topDir) ' '];
+% for ifg = 1:length(scriptPath)
+% 	fid = fopen(fullfile(scriptPath(ifg).folder,scriptPath(ifg).name));
+% 	text = textscan(fid,'%s','delimiter','\n');
+% 	text{1}{2} = strcat(extractBefore(text{1}{2},' -i'),contrackPath,' -i',extractAfter(text{1}{2},' -i'));
+% 	fclose(fid);
+% 	fid = fopen(fullfile(scriptPath(ifg).folder,scriptPath(ifg).name),'w');
+% 	fprintf(fid,'%s\n',text{:}{:});
+% 	fclose(fid);
+% 	clear text;
+% end
 
 %% run scripts
 system(cmd);
 
 cd(topDir);
 %% clip fibers and create classification structure
-orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','*.pdb'));
+[classification,mergedFG] = cleanFibers(topDir,config.contrackThreshold);
 
-fgPath = {fullfile(orFibersDir(1).folder,orFibersDir(1).name)};
-
-% need specific modification to how pdb fgs are loaded
-[mergedFG,whole_classification] = bsc_mergeFGandClass_pdb(fgPath);
-
-whole_classification.names = {sprintf('%s-optic-radiation',hemi)};
-
-mergedFG.name = sprintf('%s_optic_radiation',hemi);
-% find better way to index this
-% fake mrtrix header
-mergedFG.params = {};
-mergedFG.params{1} = 'mrtrix_header';
-mergedFG.params{2}{1} = 'mrtrix tracks    ';
-mergedFG.params{2}{2} = 'mrtrix_version: 3.0_RC3';
-mergedFG.params{2}{3} = 'timestamp: 1573277529.4060957432';
-mergedFG.params{2}{4} = 'datatype: Float32LE';
-mergedFG.params{2}{5} = 'file: . 160';
-mergedFG.params{2}{6} = sprintf('count: %s',num2str(length(mergedFG.fibers)));
-mergedFG.params{2}{7} = sprintf('total_count: %s',num2str(length(mergedFG.fibers)));
-
-% save tck
-dtiExportFibersMrtrix_tracks(mergedFG,'track.tck');
-
-% make whole OR fg_classified for cleaning
-whole_fg_classified = bsc_makeFGsFromClassification_v4(whole_classification,mergedFG);
-[clean_classification] = cleanFibers(whole_classification,mergedFG,hemi);
-
-%% Eccentricity classification
-[fg_classified,classification] = eccentricityClassification(config,whole_fg_classified,mergedFG,clean_classification,hemi);
+%% make fg classified structure for eccentricity classification
+fg_classified = bsc_makeFGsFromClassification_v4(classification,mergedFG);
 
 %% Save output
-save('output.mat','classification','fg_classified','-v7.3');
+save('output.mat','classification');
 
 %% create tracts for json structures for visualization
 tracts = fg2Array(fg_classified);

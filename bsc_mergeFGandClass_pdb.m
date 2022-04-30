@@ -1,4 +1,4 @@
-function [mergedFG, mergedClassification]=bsc_mergeFGandClass(inputFGs,inputClassifications)
+function [mergedFG, mergedClassification]=bsc_mergeFGandClass_pdb(inputFGs,inputClassifications)
 %% [mergedFG, mergedClassification]=bsc_mergeFGandClass(inputFGs,inputClassifications)
 %
 % Takes in some number of fg structures (and classification structures) and
@@ -205,7 +205,7 @@ for iInputs=1:length(inputFGs)
     if nameMapping(iInputs)==iInputs
         %% SPLICE the classification structures, as they correspond to unique fg structures
         
-        mergedClassification= bsc_spliceClassifications(mergedClassification,toMergeclassification);
+        mergedClassification= bsc_spliceClassifications_bl(mergedClassification,toMergeclassification);
     else
         %% RECONCILE the classification structures, as the current fg corresponds to a previous fg structure
         
