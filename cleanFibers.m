@@ -80,7 +80,7 @@ for ifg = 1:length(orFibersDir)
     hem = extractBetween(orFibersDir(ifg).name,'lgn_','_Ecc');
     
     [fg,~,keep1,~] = dtiIntersectFibersWithRoi([],'and',[],thalLatPost.(hem{1}),fg);
-    [fg,~,keep2,~] = dtiIntersectFibersWithRoi([],'not',[],thalMedPostSub.(hem{1}),fg);
+    % [fg,~,keep2,~] = dtiIntersectFibersWithRoi([],'not',[],thalMedPostSub.(hem{1}),fg);
 %     [fg,~,keep3,~] = dtiIntersectFibersWithRoi([],'not',[],anteriorThalLimit.(hem{1}),fg);
 
     mtrExportFibers(fg,sprintf('%s/lgn_planes_pruned_contrack_pruned_%s',orFibersDir(ifg).folder,orFibersDir(ifg).name),[],[],[],3)

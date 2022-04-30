@@ -12,19 +12,12 @@ if ~isdeployed
     addpath(genpath('/N/u/brlife/git/wma_tools'))
 
     %for old VM
-%     addpath(genpath('/usr/local/vistasoft'))
-%     addpath(genpath('/usr/local/encode'))
-%     addpath(genpath('/usr/local/jsonlab'))
-%     addpath(genpath('/usr/local/spm'))
-%     addpath(genpath('/usr/local/wma_tools'))
-%     addpath(genpath('/usr/local/AFQ'))
-
-    addpath(genpath('/media/brad/Data/git/vistasoft'))
-    addpath(genpath('/media/brad/Data/git/encode'))
-    addpath(genpath('/media/brad/Data/git/jsonlab'))
-    addpath(genpath('/media/brad/Data/git/spm'))
-    addpath(genpath('/media/brad/Data/git/wma_tools'))
-    addpath(genpath('/media/brad/Data/git/AFQ'))
+    addpath(genpath('/usr/local/vistasoft'))
+    addpath(genpath('/usr/local/encode'))
+    addpath(genpath('/usr/local/jsonlab'))
+    addpath(genpath('/usr/local/spm'))
+    addpath(genpath('/usr/local/wma_tools'))
+    addpath(genpath('/usr/local/AFQ'))
 end
 
 %% config and top variables
@@ -62,9 +55,8 @@ for h = 1:length(hemi)
         j=j+1;
     end
 end
-% ctrParams.roi1 = 'lgn_left';
-% ctrParams.roi2 = 'Ecc7to90_left';
-ctrParams.nSamples = 10000;
+
+ctrParams.nSamples = config.nSamples;
 ctrParams.maxNodes = config.maxNodes;
 ctrParams.minNodes = config.minNodes; % defalt: 10
 ctrParams.stepSize = config.stepSize; % default: 1
@@ -84,18 +76,18 @@ ctrParams.executeSh = 0;
 [cmd, ~] = ctrInitBatchTrack(ctrParams);
 
 % fix script for missing path to contrack c code: NEED TO POTENTIALLY DEBUG
-% scriptPath = dir(fullfile(topDir,'/tmpSubj/dtiinit/dti/fibers/conTrack/OR/*.sh'));
-% contrackPath = [sprintf('%s/contrack_gen.glxa64',topDir) ' '];
-% for ifg = 1:length(scriptPath)
-% 	fid = fopen(fullfile(scriptPath(ifg).folder,scriptPath(ifg).name));
-% 	text = textscan(fid,'%s','delimiter','\n');
-% 	text{1}{2} = strcat(extractBefore(text{1}{2},' -i'),contrackPath,' -i',extractAfter(text{1}{2},' -i'));
-% 	fclose(fid);
-% 	fid = fopen(fullfile(scriptPath(ifg).folder,scriptPath(ifg).name),'w');
-% 	fprintf(fid,'%s\n',text{:}{:});
-% 	fclose(fid);
-% 	clear text;
-% end
+scriptPath = dir(fullfile(topDir,'/tmpSubj/dtiinit/dti/fibers/conTrack/OR/*.sh'));
+contrackPath = [sprintf('%s/contrack_gen.glxa64',topDir) ' '];
+for ifg = 1:length(scriptPath)
+	fid = fopen(fullfile(scriptPath(ifg).folder,scriptPath(ifg).name));
+	text = textscan(fid,'%s','delimiter','\n');
+	text{1}{2} = strcat(extractBefore(text{1}{2},' -i'),contrackPath,' -i',extractAfter(text{1}{2},' -i'));
+	fclose(fid);
+	fid = fopen(fullfile(scriptPath(ifg).folder,scriptPath(ifg).name),'w');
+	fprintf(fid,'%s\n',text{:}{:});
+	fclose(fid);
+	clear text;
+end
 
 %% run scripts
 system(cmd);
@@ -154,4 +146,3 @@ writetable(T, 'output_fibercounts.txt');
 
 exit;
 end
-
