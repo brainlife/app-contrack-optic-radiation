@@ -9,7 +9,7 @@ dtiinit=`jq -r '.dtiinit' config.json`
 hemis="left right"
 
 mkdir tmpSubj tmpSubj/dtiinit
-cp -R ${dtiinit}/* ./tmpSubj/dtiinit
+cp -R ${dtiinit}/* ./tmpSubj/dtiinit && chmod -R +w tmpSubj/*
 cp -R ${eccentricity} ./eccentricity.nii.gz
 
 # convert hemispheric ribbons
