@@ -20,4 +20,12 @@ Date:   Mon Jun 8 15:07:08 2020 -0400
 
     fixed innacurate coordinate assumption
     added abs to take care of both negative case for borders
-/N/u/brlife/git/AFQ
+/N/u/brlife/git/afq
+commit 50bdc81e060670a83789a4168f9b5e88cea39c2a
+Merge: 0f5022e ff02c94
+Author: Jason D. Yeatman <jyeatman@uw.edu>
+Date:   Sun May 27 18:07:17 2018 -0700
+
+    Merge pull request #17 from htakemur/sips
+    
+    The code to identify human SIPS

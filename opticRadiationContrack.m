@@ -10,7 +10,7 @@ if ~isdeployed
     addpath(genpath('/N/u/brlife/git/jsonlab'))
     addpath(genpath('/N/u/brlife/git/spm'))
     addpath(genpath('/N/u/brlife/git/wma_tools'))
-    addpath(genpath('/N/u/brlife/git/AFQ'))
+    addpath(genpath('/N/u/brlife/git/afq'))
 
     %for old VM
     addpath(genpath('/usr/local/vistasoft'))
@@ -18,7 +18,7 @@ if ~isdeployed
     addpath(genpath('/usr/local/jsonlab'))
     addpath(genpath('/usr/local/spm'))
     addpath(genpath('/usr/local/wma_tools'))
-    addpath(genpath('/usr/local/AFQ'))
+    addpath(genpath('/usr/local/afq'))
 end
 
 %% config and top variables

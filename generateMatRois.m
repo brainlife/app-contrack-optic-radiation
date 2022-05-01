@@ -21,12 +21,27 @@ lgn.left = niftiRead(fullfile('./ROIlh.lgn.nii.gz'));
 lgn.right = niftiRead(fullfile('./ROIrh.lgn.nii.gz'));
 
 for hh = 1:length(hemis)
+    % load and inflate roi
     niiName =  [lgn.(hemis{hh}).fname];
-    roiLgn = dtiRoiFromNifti(niiName,0,fullfile(rois,sprintf('lgn_%s.mat',hemis{hh})),...
-                         'mat',true,true);
-    clear niiName roiLgn
-                     
-    % inflation? TO DO LATER
+                         
+    if isequal(config.inflate_lgn,0)
+        display('no lgn inflation')
+    else
+        display('inflating lgn')
+    end
+
+    roiLgn = bsc_roiFromAtlasNums(niiName,1,config.inflate_lgn);
+    
+    %% save the ROI
+    % nii.gz
+    niiName =  [fullfile(rois,sprintf('lgn_%s.nii.gz',hemis{hh}))];
+    niftiWrite(roiLgn,niiName)
+
+    % mat
+    matName =  [fullfile(rois,sprintf('lgn_%s.mat',hemis{hh}))];
+    binary = true; save = true;
+    dtiRoiFromNifti(niiName,0,matName,'mat',binary,save);
+    clear niiName matName binary
 end
 
 %% eccentricity ROIs
