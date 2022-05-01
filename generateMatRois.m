@@ -35,13 +35,14 @@ for hh = 1:length(hemis)
     %% save the ROI
     % nii.gz
     outNiiName =  [fullfile(rois,sprintf('lgn_%s.nii.gz',hemis{hh}))];
-    niftiWrite(roiLgn,outNiiName)
+    [ni, roiName]=dtiRoiNiftiFromMat(roiLgn,niiName,outNiiName,0);
+    niftiWrite(ni,outNiiName)
 
     % mat
     matName =  [fullfile(rois,sprintf('lgn_%s.mat',hemis{hh}))];
     binary = true; save = true;
     dtiRoiFromNifti(outNiiName,0,matName,'mat',binary,save);
-    clear niiName matName binary
+    clear ni niiName outNiiName matName binary
 end
 
 %% eccentricity ROIs
