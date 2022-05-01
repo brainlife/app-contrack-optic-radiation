@@ -24,7 +24,7 @@ for hh = 1:length(hemis)
     % load and inflate roi
     niiName =  [lgn.(hemis{hh}).fname];
                          
-    if isequal(config.inflate_lgn,0)
+    if isequal(config.inflate_lgn,1)
         display('no lgn inflation')
     else
         display('inflating lgn')
@@ -34,13 +34,13 @@ for hh = 1:length(hemis)
     
     %% save the ROI
     % nii.gz
-    niiName =  [fullfile(rois,sprintf('lgn_%s.nii.gz',hemis{hh}))];
-    niftiWrite(roiLgn,niiName)
+    outNiiName =  [fullfile(rois,sprintf('lgn_%s.nii.gz',hemis{hh}))];
+    niftiWrite(roiLgn,outNiiName)
 
     % mat
     matName =  [fullfile(rois,sprintf('lgn_%s.mat',hemis{hh}))];
     binary = true; save = true;
-    dtiRoiFromNifti(niiName,0,matName,'mat',binary,save);
+    dtiRoiFromNifti(outNiiName,0,matName,'mat',binary,save);
     clear niiName matName binary
 end
 
