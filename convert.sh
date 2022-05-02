@@ -31,4 +31,4 @@ done
 # convert ribbon
 mri_convert $freesurfer/mri/ribbon.mgz ribbon.nii.gz
 
-mri_vol2vol --mov ./tmp.csf_bin.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin*.nii.gz --regheader --interp neareast --o ./csf_bin.nii.gz
+mri_vol2vol --mov ./tmp.csf.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin*.nii.gz --regheader --interp neareast --o ./csf.nii.gz
