@@ -20,7 +20,7 @@ do
   else
     hem="rh"
   fi
-  mri_convert $freesurfer/mri/${hem}.ribbon.mgz ./tmp.${hem}.ribbon.nii.gz && mri_vol2vol --mov ./tmp.${hem}.ribbon.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin*.nii.gz --regheader --interp neareast --o ./${hem}.ribbon.nii.gz
+  mri_convert $freesurfer/mri/${hem}.ribbon.mgz ./${hem}.ribbon.nii.gz
 
   # copy over lgn and v1
   cp -R ${rois}/*${hem}.${lgn}.nii.gz ./ROI${hem}.lgn.nii.gz
