@@ -1,4 +1,4 @@
-function [classification,mergedFG] = cleanFibers(topDir,threshold)
+function [classification,mergedFG] = cleanFibers(topDir,threshold,config)
 
 % variables
 orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','fg_*.pdb'));
@@ -11,13 +11,13 @@ for hh = 1:length(hemi)
 	if strcmp(hemi{hh},'left')
 		hemisphereROI.(hemi{hh}) = bsc_loadAndParseROI('ribbon_right.nii.gz');
         exclusionROI.(hemi{hh}) = bsc_loadAndParseROI('ROIlh.exclusion.nii.gz');
-        lgnROI.(hemi{hh}) = bsc_loadAndParseROI('ROIlh.lgn.nii.gz');
-        referenceNifti.(hemi{hh}) = niftiRead('ROIlh.lgn.nii.gz');
+        lgnROI.(hemi{hh}) = bsc_loadAndParseROI([rois,sprintf('lgn_left_%s.nii.gz',num2str(config.inflate_v1))]);
+        referenceNifti.(hemi{hh}) = niftiRead([rois,sprintf('lgn_left_%s.nii.gz',num2str(config.inflate_v1))]);
 	else
 		hemisphereROI.(hemi{hh}) = bsc_loadAndParseROI('ribbon_left.nii.gz');
         exclusionROI.(hemi{hh}) = bsc_loadAndParseROI('ROIrh.exclusion.nii.gz');
-        lgnROI.(hemi{hh}) = bsc_loadAndParseROI('ROIrh.lgn.nii.gz');
-        referenceNifti.(hemi{hh}) = niftiRead('ROIrh.lgn.nii.gz');
+        lgnROI.(hemi{hh}) = bsc_loadAndParseROI([rois,sprintf('lgn_right_%s.nii.gz',num2str(config.inflate_v1))]);
+        referenceNifti.(hemi{hh}) = niftiRead([rois,sprintf('lgn_right_%s.nii.gz',num2str(config.inflate_v1))]);
 	end
 end
 
@@ -125,9 +125,9 @@ for ifg = 1:length(classification.names)
 	indexes = find(classification.index == ifg);
 	tractFG.fibers = mergedFG.fibers(indexes);
 	if strcmp(extractBefore(tractFG.name,'_'),'left')
-	    [keep] = dtiIntersectFibersWithRoi_bl([],'not',[],Not.left,tractFG);
+	    [keep] = dtiIntersectFibersWithRoi_bl([],'not',config.minDistanceClean,Not.left,tractFG);
 	else
-	    [keep] = dtiIntersectFibersWithRoi_bl([],'not',[],Not.right,tractFG);
+	    [keep] = dtiIntersectFibersWithRoi_bl([],'not',config.minDistanceClean,Not.right,tractFG);
 	end
 
 	% set indices of streamlines that intersect the not ROI to 0 as if they

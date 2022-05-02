@@ -2,7 +2,7 @@
 
 mask=`jq -r '.mask' config.json`
 anat=`jq -r '.t1' config.json`
-NCORE=8
+NCORE=4
 
 # convert anatomical t1 to mrtrix format
 [ ! -f anat.mif ] && mrconvert ${anat} anat.mif -nthreads $NCORE

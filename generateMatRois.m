@@ -34,12 +34,12 @@ for hh = 1:length(hemis)
     
     %% save the ROI
     % nii.gz
-    outNiiName =  [fullfile(rois,sprintf('lgn_%s.nii.gz',hemis{hh}))];
+    outNiiName =  [fullfile(rois,sprintf('lgn_%s_%s.nii.gz',hemis{hh},num2str(config.inflate_lgn)))];
     [ni, roiName]=dtiRoiNiftiFromMat(roiLgn,niiName,outNiiName,0);
     niftiWrite(ni,outNiiName)
 
     % mat
-    matName =  [fullfile(rois,sprintf('lgn_%s.mat',hemis{hh}))];
+    matName =  [fullfile(rois,sprintf('lgn_%s_%s.mat',hemis{hh},num2str(config.inflate_lgn)))];
     binary = true; save = true;
     dtiRoiFromNifti(outNiiName,0,matName,'mat',binary,save);
     clear ni niiName outNiiName matName binary
@@ -66,9 +66,15 @@ for hh = 1:length(hemis)
         % nii.gz
         niiName =  [rois,tmp.fname,sprintf('_%s.nii.gz',hemis{hh})];
         niftiWrite(tmp,niiName)
+        
+        outv1name = [rois,tmp.fname,sprintf('_%s_%s.nii.gz',hemis{hh},num2str(config.inflate_v1))];
+        v1 = bsc_roiFromAtlasNums(tmp,1,config.inflate_v1);
+
+        [v1, v1Name]=dtiRoiNiftiFromMat(v1,niiName,outv1name,1);
 
         % mat
-        matName =  [rois,tmp.fname,sprintf('_%s.mat',hemis{hh})];
+        matName =  [rois,tmp.fname,sprintf('_%s_%s.mat',hemis{hh},num2str(config.inflate_v1))];
+
         binary = true; save = true;
         dtiRoiFromNifti(niiName,0,matName,'mat',binary,save);
         clear tmp niiName matName binary
