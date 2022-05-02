@@ -18,7 +18,7 @@ if [ ! -f csf.nii.gz ]; then
 
         # generate csf mask
         [ ! -f csf.mif ] && mrconvert -coord 3 3 5tt.mif csf.mif -force -nthreads $NCORE
-        [ ! -f csf.nii.gz ] && mrconvert csf.mif -stride 1,2,3,4 csf.nii.gz -force -nthreads $NCORE
+        [ ! -f csf.nii.gz ] && mrconvert csf.mif -stride 1,2,3,4 tmp.csf.nii.gz -force -nthreads $NCORE
 else
         echo "csf mask already exits. skipping"
 fi
