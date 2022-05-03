@@ -1,15 +1,23 @@
 #!/bin/bash
 
-rois=`jq -r '.rois' config.json`
-roi1=`jq -r '.seed_roi' config.json`
-eccentricity=`jq -r '.eccentricity' config.json`
+hemis="left right"
 
-# make left hemisphere eccentricity
-fslmaths $eccentricity -mul lh.ribbon.nii.gz eccentricity_left.nii.gz
-# make right hemisphere eccentricity
-fslmaths $eccentricity -mul rh.ribbon.nii.gz eccentricity_right.nii.gz
+for hemi in $hemis
+do
+  if [[ ${hemi} == 'left' ]]; then
+    hem="lh"
+  else
+    hem="rh"
+  fi
+  # make hemispheric eccentricity data by hemisphere
+  fslmaths ./eccentricity.nii.gz -mul ${hem}.ribbon.nii.gz ./eccentricity_${hemi}.nii.gz
 
+  # mask by v1
+  fslmaths ./eccentricity_${hemi}.nii.gz -mas ./ROI${hem}.v1.nii.gz ./eccentricity_${hemi}.nii.gz
+
+  # threshold left and right ribbons
+  fslmaths ribbon.nii.gz -thr 40 -bin ./ribbon_${hemi}.nii.gz
+done
+
+# binarize csf
 fslmaths csf.nii.gz -bin csf_bin.nii.gz
-
-fslmaths ribbon.nii.gz -thr 40 -bin ribbon_right.nii.gz
-fslmaths ribbon.nii.gz -uthr 10 -bin ribbon_left.nii.gz

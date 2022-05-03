@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l nodes=1:ppn=8,walltime=12:00:00
+#PBS -l nodes=1:ppn=1,walltime=32:00:00,vmem=20gb
 #PBS -N app-contract-optic-radiation
 
 # create csf mask
@@ -34,7 +34,7 @@ if [ -f track.tck ]; then
 	mv ./output.mat ./wmc/classification.mat
 	mv ./tracts/* ./wmc/tracts/
 	mv ./output_fibercounts.txt ./wmc/
-	rm -rf tmpSubj *.nii.gz* *.mif* ./bin ./logs ./tracts license.txt
+	#rm -rf tmpSubj *.nii.gz* *.mif* ./bin ./logs ./tracts license.txt
 	exit 0;
 else
 	echo "tracking failed"

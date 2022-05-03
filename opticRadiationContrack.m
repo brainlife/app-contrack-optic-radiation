@@ -1,5 +1,6 @@
 function [] = opticRadiationContrack()
 
+%% load packages
 if ~isdeployed
     disp('loading path')
 
@@ -9,6 +10,7 @@ if ~isdeployed
     addpath(genpath('/N/u/brlife/git/jsonlab'))
     addpath(genpath('/N/u/brlife/git/spm'))
     addpath(genpath('/N/u/brlife/git/wma_tools'))
+    addpath(genpath('/N/u/brlife/git/afq'))
 
     %for old VM
     addpath(genpath('/usr/local/vistasoft'))
@@ -16,19 +18,23 @@ if ~isdeployed
     addpath(genpath('/usr/local/jsonlab'))
     addpath(genpath('/usr/local/spm'))
     addpath(genpath('/usr/local/wma_tools'))
+    addpath(genpath('/usr/local/afq'))
 end
 
-
-% load my own config.json
+%% config and top variables
+% load config.json
 config = loadjson('config.json');
 
 hemi = {'left','right'};
 
 topDir = pwd;
 baseDir = fullfile(pwd,'tmpSubj');
+% tractNames = split(config.track_names);
+MinDegree = str2num(config.minDegree);
+MaxDegree = str2num(config.maxDegree);
 
 %% generate .mat rois
-generateMatRois(config);
+generateMatRois(config,MinDegree,MaxDegree);
 
 %% generate batch parameters
 % params
@@ -42,14 +48,19 @@ ctrParams.roiDir = 'ROIs';
 ctrParams.subs = {'dtiinit'};
 
 % set rois and parameters
-ctrParams.roi1 = {'lgn_left','lgn_left','lgn_left',...
-	'lgn_right','lgn_right','lgn_right'};
-ctrParams.roi2 = {'Ecc0to5_left','Ecc5to15_left','Ecc15to90_left',...
-    'Ecc0to5_right','Ecc5to15_right','Ecc15to90_right'};
-ctrParams.nSamples = config.count;
-ctrParams.maxNodes = config.maxnodes;
-ctrParams.minNodes = config.minnodes; % defalt: 10
-ctrParams.stepSize = config.stepsize; % default: 1
+j=1;
+for h = 1:length(hemi)
+    for i = 1:length(MinDegree)
+        ctrParams.roi1{j} = sprintf('lgn_%s_%s',hemi{h},num2str(config.inflate_lgn));
+        ctrParams.roi2{j} = sprintf('Ecc%sto%s_%s_%s',num2str(MinDegree(i)),num2str(MaxDegree(i)),hemi{h},num2str(config.inflate_v1));
+        j=j+1;
+    end
+end
+
+ctrParams.nSamples = config.nSamples;
+ctrParams.maxNodes = config.maxNodes;
+ctrParams.minNodes = config.minNodes; % defalt: 10
+ctrParams.stepSize = config.stepSize; % default: 1
 ctrParams.scrDir = fullfile(pwd,'bin');
 mkdir(ctrParams.scrDir);
 ctrParams.logDir = fullfile(pwd,'logs');
@@ -65,7 +76,7 @@ ctrParams.executeSh = 0;
 % make contrack scripts
 [cmd, ~] = ctrInitBatchTrack(ctrParams);
 
-% fix script for missing path to contrack c code
+% fix script for missing path to contrack c code: NEED TO POTENTIALLY DEBUG
 scriptPath = dir(fullfile(topDir,'/tmpSubj/dtiinit/dti/fibers/conTrack/OR/*.sh'));
 contrackPath = [sprintf('%s/contrack_gen.glxa64',topDir) ' '];
 for ifg = 1:length(scriptPath)
@@ -84,13 +95,13 @@ system(cmd);
 
 cd(topDir);
 %% clip fibers and create classification structure
-[classification,mergedFG] = cleanFibers();
+[classification,mergedFG] = cleanFibers(topDir,config.contrackThreshold,config);
 
 %% make fg classified structure for eccentricity classification
 fg_classified = bsc_makeFGsFromClassification_v4(classification,mergedFG);
 
 %% Save output
-save('output.mat','classification','fg_classified','-v7.3');
+save('output.mat','classification');
 
 %% create tracts for json structures for visualization
 tracts = fg2Array(fg_classified);
@@ -136,4 +147,3 @@ writetable(T, 'output_fibercounts.txt');
 
 exit;
 end
-

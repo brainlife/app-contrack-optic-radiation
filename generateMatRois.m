@@ -1,4 +1,4 @@
-function [] = generateMatRois_template(config)
+function [] = generateMatRois(config,MinDegree,MaxDegree)
 
 % parse inputs
 roisDir = fullfile(config.rois);
@@ -17,25 +17,38 @@ end
 % something other than freesurfer thalamic nuclei segmentation. basically
 % just require users to input the roi numbers of their lgns and parse that
 % as a configurable input
-lgn.left = niftiRead(fullfile(roisDir,'ROI008109.nii.gz'));
-lgn.right = niftiRead(fullfile(roisDir,'ROI008209.nii.gz'));
+lgn.left = niftiRead(fullfile('./ROIlh.lgn.nii.gz'));
+lgn.right = niftiRead(fullfile('./ROIrh.lgn.nii.gz'));
 
 for hh = 1:length(hemis)
+    % load and inflate roi
     niiName =  [lgn.(hemis{hh}).fname];
-    roiLgn = dtiRoiFromNifti(niiName,0,fullfile(rois,sprintf('lgn_%s.mat',hemis{hh})),...
-                         'mat',true,true);
-    clear niiName roiLgn
-                     
-    % inflation? TO DO LATER
+                         
+    if isequal(config.inflate_lgn,1)
+        display('no lgn inflation')
+    else
+        display('inflating lgn')
+    end
+
+    roiLgn = bsc_roiFromAtlasNums(niiName,1,config.inflate_lgn);
+    
+    %% save the ROI
+    % nii.gz
+    outNiiName =  [fullfile(rois,sprintf('lgn_%s_%s.nii.gz',hemis{hh},num2str(config.inflate_lgn)))];
+    [ni, roiName]=dtiRoiNiftiFromMat(roiLgn,niiName,outNiiName,0);
+    niftiWrite(ni,outNiiName)
+
+    % mat
+    matName =  [fullfile(rois,sprintf('lgn_%s_%s.mat',hemis{hh},num2str(config.inflate_lgn)))];
+    binary = true; save = true;
+    dtiRoiFromNifti(outNiiName,0,matName,'mat',binary,save);
+    clear ni niiName outNiiName matName binary
 end
 
 %% eccentricity ROIs
 for hh = 1:length(hemis)
 	eccen.(hemis{hh}) = niftiRead(sprintf('eccentricity_%s.nii.gz',hemis{hh}));
 end
-
-MinDegree = [0 5 15];
-MaxDegree = [5 15 90];
 
 % save rois based on eccentricity
 for hh = 1:length(hemis)
@@ -53,9 +66,15 @@ for hh = 1:length(hemis)
         % nii.gz
         niiName =  [rois,tmp.fname,sprintf('_%s.nii.gz',hemis{hh})];
         niftiWrite(tmp,niiName)
+        
+        outv1name = [rois,tmp.fname,sprintf('_%s_%s.nii.gz',hemis{hh},num2str(config.inflate_v1))];
+        v1 = bsc_roiFromAtlasNums(tmp,1,config.inflate_v1);
+
+        [v1, v1Name]=dtiRoiNiftiFromMat(v1,niiName,outv1name,1);
 
         % mat
-        matName =  [rois,tmp.fname,sprintf('_%s.mat',hemis{hh})];
+        matName =  [rois,tmp.fname,sprintf('_%s_%s.mat',hemis{hh},num2str(config.inflate_v1))];
+
         binary = true; save = true;
         dtiRoiFromNifti(niiName,0,matName,'mat',binary,save);
         clear tmp niiName matName binary

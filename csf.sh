@@ -2,7 +2,7 @@
 
 mask=`jq -r '.mask' config.json`
 anat=`jq -r '.t1' config.json`
-NCORE=8
+NCORE=4
 
 # convert anatomical t1 to mrtrix format
 [ ! -f anat.mif ] && mrconvert ${anat} anat.mif -nthreads $NCORE
@@ -15,9 +15,10 @@ if [ ! -f csf.nii.gz ]; then
                 echo "input 5tt mask exists. converting to mrtrix format"
                 mrconvert ${mask} -stride 1,2,3,4 5tt.mif -force -nthreads $NCORE
         fi
-# generate csf mask
+
+        # generate csf mask
         [ ! -f csf.mif ] && mrconvert -coord 3 3 5tt.mif csf.mif -force -nthreads $NCORE
-        [ ! -f csf.nii.gz ] && mrconvert csf.mif -stride 1,2,3,4 csf.nii.gz -force -nthreads $NCORE
+        [ ! -f csf.nii.gz ] && mrconvert csf.mif -stride 1,2,3,4 tmp.csf.nii.gz -force -nthreads $NCORE
 else
         echo "csf mask already exits. skipping"
 fi
