@@ -45,6 +45,39 @@ for hh = 1:length(hemis)
     clear ni niiName outNiiName matName binary
 end
 
+%% v1 ROIs
+% need to remove hard coding of ROI names for lgn in case someone uses
+% something other than freesurfer thalamic nuclei segmentation. basically
+% just require users to input the roi numbers of their lgns and parse that
+% as a configurable input
+v1.left = niftiRead(fullfile('./ROIlh.v1.nii.gz'));
+v1.right = niftiRead(fullfile('./ROIrh.v1.nii.gz'));
+
+for hh = 1:length(hemis)
+    % load and inflate roi
+    niiName =  [v1.(hemis{hh}).fname];
+                         
+    if isequal(config.inflate_v1,1)
+        display('no v1 inflation')
+    else
+        display('inflating v1')
+    end
+
+    roiV1 = bsc_roiFromAtlasNums(niiName,1,config.inflate_v1);
+    
+    %% save the ROI
+    % nii.gz
+    outNiiName =  [fullfile(rois,sprintf('v1_%s_%s.nii.gz',hemis{hh},num2str(config.inflate_v1)))];
+    [ni, roiName]=dtiRoiNiftiFromMat(roiV1,niiName,outNiiName,0);
+    niftiWrite(ni,outNiiName)
+
+    % mat
+    matName =  [fullfile(rois,sprintf('v1_%s_%s.mat',hemis{hh},num2str(config.inflate_v1)))];
+    binary = true; save = true;
+    dtiRoiFromNifti(outNiiName,0,matName,'mat',binary,save);
+    clear ni niiName outNiiName matName binary
+end
+
 %% eccentricity ROIs
 for hh = 1:length(hemis)
 	eccen.(hemis{hh}) = niftiRead(sprintf('eccentricity_%s.nii.gz',hemis{hh}));

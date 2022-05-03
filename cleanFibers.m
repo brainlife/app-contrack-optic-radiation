@@ -1,4 +1,4 @@
-function [classification,mergedFG] = cleanFibers(topDir,threshold,config)
+function [classification,mergedFG] = cleanFibers(topDir,threshold,config,minDegree,maxDegree)
 
 % variables
 rois = fullfile('tmpSubj','dtiinit','ROIs/');
@@ -12,13 +12,13 @@ for hh = 1:length(hemi)
 	if strcmp(hemi{hh},'left')
 		hemisphereROI.(hemi{hh}) = bsc_loadAndParseROI('ribbon_right.nii.gz');
         exclusionROI.(hemi{hh}) = bsc_loadAndParseROI('ROIlh.exclusion.nii.gz');
-        lgnROI.(hemi{hh}) = bsc_loadAndParseROI([rois,sprintf('lgn_left_%s.nii.gz',num2str(config.inflate_v1))]);
-        referenceNifti.(hemi{hh}) = niftiRead([rois,sprintf('lgn_left_%s.nii.gz',num2str(config.inflate_v1))]);
+        lgnROI.(hemi{hh}) = bsc_loadAndParseROI([rois,sprintf('lgn_left_%s.nii.gz',num2str(config.inflate_lgn))]);
+        referenceNifti.(hemi{hh}) = niftiRead([rois,sprintf('lgn_left_%s.nii.gz',num2str(config.inflate_lgn))]);
 	else
 		hemisphereROI.(hemi{hh}) = bsc_loadAndParseROI('ribbon_left.nii.gz');
         exclusionROI.(hemi{hh}) = bsc_loadAndParseROI('ROIrh.exclusion.nii.gz');
-        lgnROI.(hemi{hh}) = bsc_loadAndParseROI([rois,sprintf('lgn_right_%s.nii.gz',num2str(config.inflate_v1))]);
-        referenceNifti.(hemi{hh}) = niftiRead([rois,sprintf('lgn_right_%s.nii.gz',num2str(config.inflate_v1))]);
+        lgnROI.(hemi{hh}) = bsc_loadAndParseROI([rois,sprintf('lgn_right_%s.nii.gz',num2str(config.inflate_lgn))]);
+        referenceNifti.(hemi{hh}) = niftiRead([rois,sprintf('lgn_right_%s.nii.gz',num2str(config.inflate_lgn))]);
 	end
 end
 
@@ -78,7 +78,7 @@ orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','c
 
 for ifg = 1:length(orFibersDir)
     fg = fgRead(sprintf('%s/%s',orFibersDir(ifg).folder,orFibersDir(ifg).name));
-    hem = extractBetween(orFibersDir(ifg).name,'lgn_','_Ecc');
+    hem = extractBetween(orFibersDir(ifg).name,'lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
     
     [fg,~,keep1,~] = dtiIntersectFibersWithRoi([],'and',[],thalLatPost.(hem{1}),fg);
     [fg,~,keep2,~] = dtiIntersectFibersWithRoi([],'not',[],thalMedPostSub.(hem{1}),fg);
@@ -95,11 +95,31 @@ for ifg = 1:length(orFibersDir)
 	fgPath{ifg} = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
 end
 
-% need specific modification to how pdb fgs are loaded
-[mergedFG,classification] = bsc_mergeFGandClass([fgPath]);
-
+% clip by eccentricity ROIs
+counter=1;
 for ifg = 1:length(fgPath)
-    classification.names(ifg) = extractBetween(fgPath{ifg}.name,'fg_OR_','_20');
+	fg = fgPath{ifg};
+    hem = extractBetween(fg.name,'fg_OR_lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
+
+	for idg = 1:length(minDegree)
+		v1 = bsc_loadAndParseROI([rois,sprintf('Ecc%sto%s_%s.nii.gz',num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1})]);
+		[fgPathsCleaned{counter},~,keep,~] = dtiIntersectFibersWithRoi([],'and',[],v1,fg);
+
+	    mtrExportFibers(fgPathsCleaned{counter},sprintf('%s/Ecc%sto%s_%s',orFibersDir(ifg).folder,num2str(minDegree(idg)),num2str(maxDegree(idg)),fg.name),[],[],[],3)
+		counter=counter+1
+	end
+end
+
+% need specific modification to how pdb fgs are loaded
+orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','Ecc_*.pdb'));
+for i = 1:length(orFibersDir)
+	fgPaths = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
+end
+
+[mergedFG,classification] = bsc_mergeFGandClass([fgPaths]);
+
+for ifg = 1:length(fgPathsCleaned)
+    classification.names(ifg) = strcat(extractBefore(fgPathsCleaned{ifg}.name,'_lgn'),'_',extractBetween(fgPathsCleaned{ifg}.name,'fg_OR_','_20'));
 end
 
 mergedFG.name = 'optic_radiation';
