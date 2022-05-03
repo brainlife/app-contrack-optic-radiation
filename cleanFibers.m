@@ -78,7 +78,7 @@ orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','c
 
 for ifg = 1:length(orFibersDir)
     fg = fgRead(sprintf('%s/%s',orFibersDir(ifg).folder,orFibersDir(ifg).name));
-    hem = extractBetween(orFibersDir(ifg).name,'lgn_','_Ecc');
+    hem = extractBetween(orFibersDir(ifg).name,'lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
     
     [fg,~,keep1,~] = dtiIntersectFibersWithRoi([],'and',[],thalLatPost.(hem{1}),fg);
     [fg,~,keep2,~] = dtiIntersectFibersWithRoi([],'not',[],thalMedPostSub.(hem{1}),fg);
