@@ -102,7 +102,7 @@ for ifg = 1:length(fgPath)
     hem = extractBetween(fg.name,'fg_OR_lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
 
 	for idg = 1:length(minDegree)
-		v1 = bsc_loadAndParseROI([rois,sprintf('Ecc%sto%s_%s.nii.gz',num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1})]);
+		v1 = bsc_loadAndParseROI([rois,sprintf('Ecc%sto%s_%s_%s.nii.gz',num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1},num2str(config.inflate_v1))]);
 		[fgPathsCleaned{counter},~,keep,~] = dtiIntersectFibersWithRoi([],'and',[],v1,fg);
 
 	    mtrExportFibers(fgPathsCleaned{counter},sprintf('%s/Ecc%sto%s_%s',orFibersDir(ifg).folder,num2str(minDegree(idg)),num2str(maxDegree(idg)),fg.name),[],[],[],3)
