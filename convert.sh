@@ -1,22 +1,34 @@
 #!/bin/bash
 
+rois=`jq -r '.rois' config.json`
+lgn=`jq -r '.lgn' config.json`
+eccentricity=`jq -r '.eccentricity' config.json`
+v1=`jq -r '.v1' config.json`
 freesurfer=`jq -r '.freesurfer' config.json`
 dtiinit=`jq -r '.dtiinit' config.json`
-eccentricity=`jq -r '.eccentricity' config.json`
-input_nii_gz=$dtiinit/`jq -r '.files.alignedDwRaw' $dtiinit/dt6.json`
-
+hemis="left right"
 
 mkdir tmpSubj tmpSubj/dtiinit
-cp -R ${dtiinit} ./tmpSubj/dtiinit
+cp -R ${dtiinit}/* ./tmpSubj/dtiinit && chmod -R +w tmpSubj/*
+cp -R ${eccentricity} ./eccentricity.nii.gz
 
-mri_vol2vol --mov csf_pre.nii.gz --targ ${input_nii_gz} --regheader --o csf.nii.gz
+# convert hemispheric ribbons
+for hemi in ${hemis}
+do
+  if [[ ${hemi} == 'left' ]]; then
+    hem="lh"
+  else
+    hem="rh"
+  fi
+  mri_convert $freesurfer/mri/${hem}.ribbon.mgz ./${hem}.ribbon.nii.gz
 
-mri_vol2vol --mov ${freesurfer}/mri/lh.ribbon.mgz --targ ${input_nii_gz} --regheader --o lh.ribbon.nii.gz
+  # copy over lgn and v1
+  cp -R ${rois}/*${hem}.${lgn}.nii.gz ./ROI${hem}.lgn.nii.gz
+  cp -R ${rois}/*${hem}.${v1}.nii.gz ./ROI${hem}.v1.nii.gz
+  [ -f ${rois}/*${hem}.exclusion.nii.gz ] && cp -R ${rois}/*${hem}.exclusion.nii.gz ./tmp.ROI${hem}.exclusion.nii.gz && mri_vol2vol --mov ./tmp.ROI${hem}.exclusion.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin*.nii.gz --regheader --interp neareast --o ./ROI${hem}.exclusion.nii.gz
+done
 
-mri_vol2vol --mov ${freesurfer}/mri/rh.ribbon.mgz --targ ${input_nii_gz} --regheader --o rh.ribbon.nii.gz
+# convert ribbon
+mri_convert $freesurfer/mri/ribbon.mgz ribbon.nii.gz
 
-mri_vol2vol --mov ${freesurfer}/mri/ribbon.mgz --targ ${input_nii_gz} --regheader --o ribbon.nii.gz
-
-mri_vol2vol --mov ${freesurfer}/mri/aparc.a2009s+aseg.mgz --targ ${input_nii_gz} --regheader --o aparc.a2009s.aseg.nii.gz
-
-mri_vol2vol --mov ${eccentricity} --targ ${input_nii_gz} --regheader --o eccentricity.nii.gz
+mri_vol2vol --mov ./tmp.csf.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin*.nii.gz --regheader --interp neareast --o ./csf.nii.gz
