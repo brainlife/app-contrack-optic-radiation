@@ -102,7 +102,7 @@ for ifg = 1:length(fgPath)
     hem = extractBetween(fg.name,'fg_OR_lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
 
 	for idg = 1:length(minDegree)
-		v1 = bsc_loadAndParseROI([rois,sprintf('Ecc%sto%s_%s.nii.gz',num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1})]);
+		v1 = bsc_loadAndParseROI([rois,sprintf('Ecc%sto%s_%s_%s.nii.gz',num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1},num2str(config.inflate_v1))]);
 		[fgPathsCleaned{counter},~,keep,~] = dtiIntersectFibersWithRoi([],'and',[],v1,fg);
 
 	    mtrExportFibers(fgPathsCleaned{counter},sprintf('%s/Ecc%sto%s_%s',orFibersDir(ifg).folder,num2str(minDegree(idg)),num2str(maxDegree(idg)),fg.name),[],[],[],3)
@@ -111,15 +111,15 @@ for ifg = 1:length(fgPath)
 end
 
 % need specific modification to how pdb fgs are loaded
-orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','Ecc_*.pdb'));
-for i = 1:length(orFibersDir)
-	fgPaths = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
+orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','Ecc*.pdb'));
+for ifg = 1:length(orFibersDir)
+	fgPaths{ifg} = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
 end
 
 [mergedFG,classification] = bsc_mergeFGandClass([fgPaths]);
 
-for ifg = 1:length(fgPathsCleaned)
-    classification.names(ifg) = strcat(extractBefore(fgPathsCleaned{ifg}.name,'_lgn'),'_',extractBetween(fgPathsCleaned{ifg}.name,'fg_OR_','_20'));
+for ifg = 1:length(fgPaths)
+    classification.names(ifg) = strcat(extractBefore(fgPaths{ifg}.name,'_lgn'),'_',extractBetween(fgPaths{ifg}.name,'fg_OR_','_20'));
 end
 
 mergedFG.name = 'optic_radiation';
