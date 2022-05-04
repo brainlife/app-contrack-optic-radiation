@@ -111,9 +111,9 @@ for ifg = 1:length(fgPath)
 end
 
 % need specific modification to how pdb fgs are loaded
-orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','Ecc_*.pdb'));
-for i = 1:length(orFibersDir)
-	fgPaths{i} = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
+orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','Ecc*.pdb'));
+for ifg = 1:length(orFibersDir)
+	fgPaths{ifg} = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
 end
 
 [mergedFG,classification] = bsc_mergeFGandClass([fgPaths]);
