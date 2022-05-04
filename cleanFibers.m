@@ -118,8 +118,8 @@ end
 
 [mergedFG,classification] = bsc_mergeFGandClass([fgPaths]);
 
-for ifg = 1:length(fgPathsCleaned)
-    classification.names(ifg) = strcat(extractBefore(fgPathsCleaned{ifg}.name,'_lgn'),'_',extractBetween(fgPathsCleaned{ifg}.name,'fg_OR_','_20'));
+for ifg = 1:length(fgPaths)
+    classification.names(ifg) = strcat(extractBefore(fgPaths{ifg}.name,'_lgn'),'_',extractBetween(fgPaths{ifg}.name,'fg_OR_','_20'));
 end
 
 mergedFG.name = 'optic_radiation';
