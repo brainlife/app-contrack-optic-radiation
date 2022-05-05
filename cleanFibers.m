@@ -52,9 +52,9 @@ for hh = 1:length(hemi)
     
     thalMedPost.(hemi{hh}) = bsc_modifyROI_v2(referenceNifti.(hemi{hh}),medialThalLimit.(hemi{hh}),posteriorThalLimit.(hemi{hh}),'anterior');
     
-%     [~,~] = dtiRoiNiftiFromMat(thalLatPost.(hemi{hh}),referenceNifti.(hemi{hh}),sprintf('thalLatPost_lgn_%s.nii.gz',hemi{hh}),true);
-%     [~,~] = dtiRoiNiftiFromMat(thalMedPost.(hemi{hh}),referenceNifti.(hemi{hh}),sprintf('thalMedPost_lgn_%s.nii.gz',hemi{hh}),true);
-%     [~,~] = dtiRoiNiftiFromMat(thalMedPostSub.(hemi{hh}),referenceNifti.(hemi{hh}),sprintf('thalMedPostSub_lgn_%s.nii.gz',hemi{hh}),true);
+     [~,~] = dtiRoiNiftiFromMat(thalLatPost.(hemi{hh}),referenceNifti.(hemi{hh}),sprintf('thalLatPost_lgn_%s.nii.gz',hemi{hh}),true);
+     [~,~] = dtiRoiNiftiFromMat(thalMedPost.(hemi{hh}),referenceNifti.(hemi{hh}),sprintf('thalMedPost_lgn_%s.nii.gz',hemi{hh}),true);
+     [~,~] = dtiRoiNiftiFromMat(thalMedPostSub.(hemi{hh}),referenceNifti.(hemi{hh}),sprintf('thalMedPostSub_lgn_%s.nii.gz',hemi{hh}),true);
 end
 
 %% Score fibers to get best streamlines possible
