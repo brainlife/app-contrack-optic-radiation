@@ -32,7 +32,7 @@ fi
 
 # generate classification structure
 if [ ! -f output.mat ]; then
-	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/generateClassificationStructure
+	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./classification/generateClassificationStructure
 fi
 
 # cleanup

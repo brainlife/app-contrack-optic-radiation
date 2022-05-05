@@ -80,7 +80,7 @@ for ifg = 1:length(orFibersDir)
 	fgPath{ifg} = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
 end
 
-[mergedFG,classification] = bsc_mergeFGandClass([fgPaths]);
+[mergedFG,classification] = bsc_mergeFGandClass([fgPath]);
 
 for ifg = 1:length(fgPaths)
     classification.names(ifg) = strcat(extractBefore(fgPaths{ifg}.name,'_lgn'),'_',extractBetween(fgPaths{ifg}.name,'fg_OR_','_20'));
