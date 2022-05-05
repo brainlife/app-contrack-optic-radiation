@@ -77,43 +77,7 @@ end
 orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','contrack_pruned_*.pdb'));
 
 for ifg = 1:length(orFibersDir)
-    fg = fgRead(sprintf('%s/%s',orFibersDir(ifg).folder,orFibersDir(ifg).name));
-    hem = extractBetween(orFibersDir(ifg).name,'lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
-    
-    [fg,~,keep1,~] = dtiIntersectFibersWithRoi([],'and',[],thalLatPost.(hem{1}),fg);
-    [fg,~,keep2,~] = dtiIntersectFibersWithRoi([],'not',[],thalMedPostSub.(hem{1}),fg);
-%     [fg,~,keep3,~] = dtiIntersectFibersWithRoi([],'not',[],anteriorThalLimit.(hem{1}),fg);
-
-    mtrExportFibers(fg,sprintf('%s/lgn_planes_pruned_contrack_pruned_%s',orFibersDir(ifg).folder,orFibersDir(ifg).name),[],[],[],3)
-end
-
-%% Load Optic radiations and clip for cleaning
-% load and clip optic radiations
-orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','lgn_planes_pruned_contrack_pruned_*.pdb'));
-
-for ifg = 1:length(orFibersDir)
 	fgPath{ifg} = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
-end
-
-% clip by eccentricity ROIs
-counter=1;
-for ifg = 1:length(fgPath)
-	fg = fgPath{ifg};
-    hem = extractBetween(fg.name,'fg_OR_lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
-
-	for idg = 1:length(minDegree)
-		v1 = bsc_loadAndParseROI([rois,sprintf('Ecc%sto%s_%s_%s.nii.gz',num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1},num2str(config.inflate_v1))]);
-		[fgPathsCleaned{counter},~,keep,~] = dtiIntersectFibersWithRoi([],'and',[],v1,fg);
-
-	    mtrExportFibers(fgPathsCleaned{counter},sprintf('%s/Ecc%sto%s_%s',orFibersDir(ifg).folder,num2str(minDegree(idg)),num2str(maxDegree(idg)),fg.name),[],[],[],3)
-		counter=counter+1
-	end
-end
-
-% need specific modification to how pdb fgs are loaded
-orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','Ecc*.pdb'));
-for ifg = 1:length(orFibersDir)
-	fgPaths{ifg} = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
 end
 
 [mergedFG,classification] = bsc_mergeFGandClass([fgPaths]);
@@ -136,22 +100,85 @@ mergedFG.params{2}{6} = sprintf('count: %s',num2str(length(mergedFG.fibers)));
 mergedFG.params{2}{7} = sprintf('total_count: %s',num2str(length(mergedFG.fibers)));
 
 % save tck
-dtiExportFibersMrtrix_tracks(mergedFG,'track.tck');
+dtiExportFibersMrtrix_tracks(mergedFG,'tmp.tck');
 
-% clip hemispheres and CSF for OR
-for ifg = 1:length(classification.names)
-	tractFG.name = classification.names{ifg};
-	tractFG.colorRgb = mergedFG.colorRgb;
-	display(sprintf('%s',tractFG.name))
-	indexes = find(classification.index == ifg);
-	tractFG.fibers = mergedFG.fibers(indexes);
-	if strcmp(extractBefore(tractFG.name,'_'),'left')
-	    [keep] = dtiIntersectFibersWithRoi_bl([],'not',config.minDistanceClean,Not.left,tractFG);
-	else
-	    [keep] = dtiIntersectFibersWithRoi_bl([],'not',config.minDistanceClean,Not.right,tractFG);
-	end
 
-	% set indices of streamlines that intersect the not ROI to 0 as if they
-	% have never been classified
-	classification.index(indexes(~keep)) = 0;
-end
+% for ifg = 1:length(orFibersDir)
+%     fg = fgRead(sprintf('%s/%s',orFibersDir(ifg).folder,orFibersDir(ifg).name));
+%     hem = extractBetween(orFibersDir(ifg).name,'lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
+    
+%     [fg,~,keep1,~] = dtiIntersectFibersWithRoi([],'and',[],thalLatPost.(hem{1}),fg);
+%     [fg,~,keep2,~] = dtiIntersectFibersWithRoi([],'not',[],thalMedPostSub.(hem{1}),fg);
+% %     [fg,~,keep3,~] = dtiIntersectFibersWithRoi([],'not',[],anteriorThalLimit.(hem{1}),fg);
+
+%     mtrExportFibers(fg,sprintf('%s/lgn_planes_pruned_contrack_pruned_%s',orFibersDir(ifg).folder,orFibersDir(ifg).name),[],[],[],3)
+% end
+
+% %% Load Optic radiations and clip for cleaning
+% % load and clip optic radiations
+% orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','lgn_planes_pruned_contrack_pruned_*.pdb'));
+
+% for ifg = 1:length(orFibersDir)
+% 	fgPath{ifg} = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
+% end
+
+% % clip by eccentricity ROIs
+% counter=1;
+% for ifg = 1:length(fgPath)
+% 	fg = fgPath{ifg};
+%     hem = extractBetween(fg.name,'fg_OR_lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
+
+% 	for idg = 1:length(minDegree)
+% 		v1 = bsc_loadAndParseROI([rois,sprintf('Ecc%sto%s_%s_%s.nii.gz',num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1},num2str(config.inflate_v1))]);
+% 		[fgPathsCleaned{counter},~,keep,~] = dtiIntersectFibersWithRoi([],'and',[],v1,fg);
+
+% 	    mtrExportFibers(fgPathsCleaned{counter},sprintf('%s/Ecc%sto%s_%s',orFibersDir(ifg).folder,num2str(minDegree(idg)),num2str(maxDegree(idg)),fg.name),[],[],[],3)
+% 		counter=counter+1
+% 	end
+% end
+
+% % need specific modification to how pdb fgs are loaded
+% orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','Ecc*.pdb'));
+% for ifg = 1:length(orFibersDir)
+% 	fgPaths{ifg} = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
+% end
+
+% [mergedFG,classification] = bsc_mergeFGandClass([fgPaths]);
+
+% for ifg = 1:length(fgPaths)
+%     classification.names(ifg) = strcat(extractBefore(fgPaths{ifg}.name,'_lgn'),'_',extractBetween(fgPaths{ifg}.name,'fg_OR_','_20'));
+% end
+
+% mergedFG.name = 'optic_radiation';
+
+% % find better way to index this
+% mergedFG.params = {};
+% mergedFG.params{1} = 'mrtrix_header';
+% mergedFG.params{2}{1} = 'mrtrix tracks    ';
+% mergedFG.params{2}{2} = 'mrtrix_version: 3.0_RC3';
+% mergedFG.params{2}{3} = 'timestamp: 1573277529.4060957432';
+% mergedFG.params{2}{4} = 'datatype: Float32LE';
+% mergedFG.params{2}{5} = 'file: . 160';
+% mergedFG.params{2}{6} = sprintf('count: %s',num2str(length(mergedFG.fibers)));
+% mergedFG.params{2}{7} = sprintf('total_count: %s',num2str(length(mergedFG.fibers)));
+
+% % save tck
+% dtiExportFibersMrtrix_tracks(mergedFG,'track.tck');
+
+% % clip hemispheres and CSF for OR
+% for ifg = 1:length(classification.names)
+% 	tractFG.name = classification.names{ifg};
+% 	tractFG.colorRgb = mergedFG.colorRgb;
+% 	display(sprintf('%s',tractFG.name))
+% 	indexes = find(classification.index == ifg);
+% 	tractFG.fibers = mergedFG.fibers(indexes);
+% 	if strcmp(extractBefore(tractFG.name,'_'),'left')
+% 	    [keep] = dtiIntersectFibersWithRoi_bl([],'not',config.minDistanceClean,Not.left,tractFG);
+% 	else
+% 	    [keep] = dtiIntersectFibersWithRoi_bl([],'not',config.minDistanceClean,Not.right,tractFG);
+% 	end
+
+% 	% set indices of streamlines that intersect the not ROI to 0 as if they
+% 	% have never been classified
+% 	classification.index(indexes(~keep)) = 0;
+% end
