@@ -29,11 +29,11 @@ for ifg = 1:length(orFibersDir)
 end
 
 % merge together into classification and fg structure
-[mergedFG,classification] = bsc_mergeFGandClass([fgPaths]);
+[mergedFG,classification] = bsc_mergeFGandClass([fgPath]);
 
 % update classification names
-for ifg = 1:length(fgPaths)
-    classification.names(ifg) = strcat(extractBefore(fgPaths{ifg}.name,'_lgn'),'_',extractBetween(fgPaths{ifg}.name,'fg_OR_','_20'));
+for ifg = 1:length(fgPath)
+    classification.names(ifg) = strcat(extractBefore(fgPath{ifg}.name,'_lgn'),'_',extractBetween(fgPath{ifg}.name,'fg_OR_','_20'));
 end
 
 % generate tck header for outputting track
