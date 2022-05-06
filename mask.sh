@@ -2,6 +2,9 @@
 
 hemis="left right"
 
+# binarize csf
+fslmaths csf.nii.gz -bin csf_bin.nii.gz
+
 for hemi in $hemis
 do
   if [[ ${hemi} == 'left' ]]; then
@@ -17,7 +20,11 @@ do
 
   # threshold left and right ribbons
   fslmaths ribbon.nii.gz -thr 40 -bin ./ribbon_${hemi}.nii.gz
+
+  # remove lgn and v1 from exclusion
+  fslmaths ./ROI${hem}.exclusion.nii.gz -sub ./ROI${hem}.lgn.nii.gz -sub ./ROI${hem}.v1.nii.gz -bin ./ROI${hem}.exclusion.nii.gz
+
+  # remove lgn and v1 from csf
+  fslmaths ./csf_bin.nii.gz -sub ./ROI${hem}.lgn.nii.gz -sub ./ROI${hem}.v1.nii.gz -bin ./csf_bin.nii.gz
 done
 
-# binarize csf
-fslmaths csf.nii.gz -bin csf_bin.nii.gz

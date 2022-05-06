@@ -25,10 +25,17 @@ do
   # copy over lgn and v1
   cp -R ${rois}/*${hem}.${lgn}.nii.gz ./ROI${hem}.lgn.nii.gz
   cp -R ${rois}/*${hem}.${v1}.nii.gz ./ROI${hem}.v1.nii.gz
-  [ -f ${rois}/*${hem}.exclusion.nii.gz ] && cp -R ${rois}/*${hem}.exclusion.nii.gz ./tmp.ROI${hem}.exclusion.nii.gz && mri_vol2vol --mov ./tmp.ROI${hem}.exclusion.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin*.nii.gz --regheader --interp neareast --o ./ROI${hem}.exclusion.nii.gz
+  [ -f ${rois}/*${hem}.exclusion.nii.gz ] && cp -R ${rois}/*${hem}.exclusion.nii.gz ./ROI${hem}.exclusion.nii.gz 
+
+  # THIS DOESNT SEEM TO HELP
+  #&& mri_vol2vol --mov ./tmp.ROI${hem}.exclusion.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin*.nii.gz --regheader --interp neareast --o ./ROI${hem}.exclusion.nii.gz
 done
 
 # convert ribbon
 mri_convert $freesurfer/mri/ribbon.mgz ribbon.nii.gz
 
-mri_vol2vol --mov ./tmp.csf.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin*.nii.gz --regheader --interp neareast --o ./csf.nii.gz
+# THIS DOESNT SEEM TO HELP
+#mri_vol2vol --mov ./tmp.csf.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin*.nii.gz --regheader --interp neareast --o ./csf.nii.gz
+
+# move b0 to ribbon ROI space in order to avoid tesselation of ROIs during contrack
+mv ./tmpSubj/dtiinit/dti/bin/b0.nii.gz ./tmpSubj/dtiinit/dti/bin/b0_dwi_space.nii.gz && mri_vol2vol --mov ./tmpSubj/dtiinit/dti/bin/b0_dwi_space.nii.gz --targ ./ROIlh.v1.nii.gz --regheader --interp nearest --o ./tmpSubj/dtiinit/dti/bin/b0.nii.gz

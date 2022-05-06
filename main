@@ -21,18 +21,8 @@ if [ ! -f ribbon_right.nii.gz ]; then
 fi
 
 # perform contrack tracking
-if [ ! -f tmp.tck ]; then
+if [ ! -f track.tck ]; then
 	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/opticRadiationContrack
-fi
-
-# clean tracks and identify eccentricity bundles with mrtrix3
-if [ ! -f right.tck ]; then
-	time singularity exec -e docker://brainlife/mrtrix3:3.0.3 ./clean_fibers_mrtrix3.sh
-fi
-
-# generate classification structure
-if [ ! -f output.mat ]; then
-	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/generateClassificationStructure
 fi
 
 # cleanup
