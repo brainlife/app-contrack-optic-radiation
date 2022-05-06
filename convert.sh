@@ -31,4 +31,9 @@ done
 # convert ribbon
 mri_convert $freesurfer/mri/ribbon.mgz ribbon.nii.gz
 
+# reslice csf
 mri_vol2vol --mov ./tmp.csf.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin*.nii.gz --regheader --interp neareast --o ./csf.nii.gz
+
+# reslice b0 (this will prevent tesselated ROIs during contrack steps)
+mv ./tmpSubj/dtiinit/dti/bin/b0.nii.gz ./tmpSubj/dtiinit/dti/bin/dtiinit.b0.nii.gz
+mri_vol2vol --mov ./tmpSubj/dtiinit/dti/bin/dtiinit.b0.nii.gz --targ ribbon.nii.gz --regheader --interp nearest --o ./tmpsubj/dtiinit/dti/bin/b0.nii.gz
