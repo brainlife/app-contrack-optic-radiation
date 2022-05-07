@@ -31,7 +31,7 @@ if [ ! -f ./tmpSubj/dtiinit/dti/bin/pdf_dtiinit.nii.gz ]; then
 fi
 
 # generate pdf file
-if [ ! -f ./tmpSubj/dtiinit/dti/bin/pdf.nii.gz ]; then
+if [ ! -f track.tck ]; then
 	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./contrackTrack/opticRadiationContrackTracking
 fi
 
