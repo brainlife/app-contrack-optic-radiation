@@ -20,9 +20,19 @@ if [ ! -f ribbon_right.nii.gz ]; then
 	time singularity exec -e docker://brainlife/fsl:latest ./mask.sh
 fi
 
-# perform contrack tracking
-if [ ! -f track.tck ]; then
-	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/opticRadiationContrack
+# generate pdf file
+if [ ! -f ./tmpSubj/dtiinit/dti/bin/pdf.nii.gz ]; then
+	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./contrackPrep/opticRadiationContrackPrep
+fi
+
+# reslice everything in dtiinit/bin to anat space
+if [ ! -f ./tmpSubj/dtiinit/dti/bin/pdf_dtiinit.nii.gz ]; then
+	time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./convert_dtiinit_bin.sh
+fi
+
+# generate pdf file
+if [ ! -f ./tmpSubj/dtiinit/dti/bin/pdf.nii.gz ]; then
+	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./contrackTrack/opticRadiationContrackPrep
 fi
 
 # cleanup

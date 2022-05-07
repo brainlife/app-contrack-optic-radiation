@@ -1,6 +1,8 @@
 #!/bin/bash
 module load matlab/2017a
 
+mkdir contrackPrep contrackTrack
+
 log=compiled/commit_ids.txt
 true > $log
 echo "/N/u/brlife/git/vistasoft" >> $log
@@ -18,7 +20,8 @@ addpath(genpath('/N/u/brlife/git/jsonlab'))
 addpath(genpath('/N/soft/mason/SPM/spm8'))
 addpath(genpath('/N/u/brlife/git/wma_tools'))
 addpath(genpath('/N/u/brlife/git/afq'))
-mcc -m -R -nodisplay -d compiled opticRadiationContrack 
+mcc -m -R -nodisplay -d contrackPrep opticRadiationContrackPrep
+mcc -m -R -nodisplay -d contrackTrack opticRadiationContrackTracking
 exit
 END
 matlab -nodisplay -nosplash -r build

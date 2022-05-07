@@ -33,10 +33,3 @@ done
 mri_convert $freesurfer/mri/ribbon.mgz tmp.ribbon.nii.gz && mri_vol2vol --mov ./tmp.ribbon.nii.gz --targ ${anat} --regheader --interp nearest --o ./ribbon.nii.gz
 
 mri_vol2vol --mov ./tmp.csf.nii.gz --targ ${anat} --regheader --interp neareast --o ./csf.nii.gz
-
-# move b0,wm,and pddDispersion to ribbon ROI space in order to avoid tesselation of ROIs during contrack
-files=(`ls ./tmpSubj/dtiinit/dti/bin/`)
-for fls in ${files[*]}
-do
-	cp ./tmpSubj/dtiinit/dti/bin/${fls} ./tmpSubj/dtiinit/dti/bin/${fls#%.nii.gz*}_dtiinit.nii.gz && mri_vol2vol --mov ./tmpSubj/dtiinit/dti/bin/${fls} --targ ${anat} --regheader --interp nearest --o ./tmpSubj/dtiinit/dti/bin/${fls}
-done
