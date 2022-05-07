@@ -32,7 +32,7 @@ fi
 
 # generate pdf file
 if [ ! -f ./tmpSubj/dtiinit/dti/bin/pdf.nii.gz ]; then
-	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./contrackTrack/opticRadiationContrackPrep
+	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./contrackTrack/opticRadiationContrackTracking
 fi
 
 # cleanup
