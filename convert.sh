@@ -11,7 +11,7 @@ hemis="left right"
 
 mkdir tmpSubj tmpSubj/dtiinit
 cp -R ${dtiinit}/* ./tmpSubj/dtiinit && chmod -R +w tmpSubj/*
-cp -R ${eccentricity} ./eccentricity.nii.gz
+cp -R ${eccentricity} ./eccentricity.nii.gz && mri_vol2vol --mov ./eccentricity.nii.gz --targ ${anat} --regheader --interp nearest --o ./eccentricity.nii.gz
 
 # convert hemispheric ribbons
 for hemi in ${hemis}
@@ -21,7 +21,7 @@ do
   else
     hem="rh"
   fi
-  mri_convert $freesurfer/mri/${hem}.ribbon.mgz ./${hem}.ribbon.nii.gz
+  mri_convert $freesurfer/mri/${hem}.ribbon.mgz ./${hem}.ribbon.nii.gz && mri_vol2vol --mov ./${hem}.ribbon.nii.gz --targ ${anat} --regheader --interp nearest --o ./${hem}.ribbon.nii.gz
 
   # copy over lgn and v1
   cp -R ${rois}/*${hem}.${lgn}.nii.gz ./tmp.ROI${hem}.lgn.nii.gz && mri_vol2vol --mov ./tmp.ROI${hem}.lgn.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI${hem}.lgn.nii.gz
@@ -30,7 +30,7 @@ do
 done
 
 # convert ribbon
-mri_convert $freesurfer/mri/ribbon.mgz ribbon.nii.gz
+mri_convert $freesurfer/mri/ribbon.mgz ribbon.nii.gz && mri_vol2vol --mov ./ribbon.nii.gz --targ ${anat} --regheader --interp nearest --o ./ribbon.nii.gz
 
 mri_vol2vol --mov ./tmp.csf.nii.gz --targ ${anat} --regheader --interp neareast --o ./csf.nii.gz
 
