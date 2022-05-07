@@ -78,6 +78,10 @@ orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','c
 
 for ifg = 1:length(orFibersDir)
     fg = fgRead(sprintf('%s/%s',orFibersDir(ifg).folder,orFibersDir(ifg).name));
+    % no idea as to why need to do this, or why 180, or why it works, but it seems to work so idk. figure out later
+    for dfg = 1:length(fg.fibers)
+        fg.fibers{dfg}(1,:) = -(fg.fibers{dfg}(1,:)) + 180;
+    end
     hem = extractBetween(orFibersDir(ifg).name,'lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
     
 	[fg,~,keep1,~] = dtiIntersectFibersWithRoi([],'and',3,thalLatPost.(hem{1}),fg);
