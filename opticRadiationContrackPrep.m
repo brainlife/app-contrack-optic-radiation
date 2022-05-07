@@ -49,8 +49,11 @@ ctrParams.subs = {'dtiinit'};
 
 % set rois and parameters
 for h = 1:length(hemi)
-    ctrParams.roi1{h} = sprintf('lgn_%s_%s',hemi{h},num2str(config.inflate_lgn));
-    ctrParams.roi2{h} = sprintf('v1_%s_%s',hemi{h},num2str(config.inflate_v1));
+    for i = 1:length(MinDegree)
+        ctrParams.roi1{j} = sprintf('lgn_%s_%s',hemi{h},num2str(config.inflate_lgn));
+        ctrParams.roi2{j} = sprintf('Ecc%sto%s_%s_%s',num2str(MinDegree(i)),num2str(MaxDegree(i)),hemi{h},num2str(config.inflate_v1));
+        j=j+1;
+    end
 end
 
 ctrParams.nSamples = config.nSamples;

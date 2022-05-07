@@ -27,4 +27,3 @@ do
   # remove lgn and v1 from csf
   fslmaths ./csf_bin.nii.gz -sub ./ROI${hem}.lgn.nii.gz -sub ./ROI${hem}.v1.nii.gz -bin ./csf_bin.nii.gz
 done
-
