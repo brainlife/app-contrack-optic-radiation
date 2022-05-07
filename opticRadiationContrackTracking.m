@@ -33,6 +33,9 @@ baseDir = fullfile(pwd,'tmpSubj');
 MinDegree = str2num(config.minDegree);
 MaxDegree = str2num(config.maxDegree);
 
+%% generate .mat rois
+generateMatRois(config,MinDegree,MaxDegree);
+
 %% generate batch parameters
 % params
 ctrParams.projectName = 'OR';
