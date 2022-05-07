@@ -6,6 +6,7 @@ eccentricity=`jq -r '.eccentricity' config.json`
 v1=`jq -r '.v1' config.json`
 freesurfer=`jq -r '.freesurfer' config.json`
 dtiinit=`jq -r '.dtiinit' config.json`
+anat=`jq -r '.t1' config.json`
 hemis="left right"
 
 mkdir tmpSubj tmpSubj/dtiinit
@@ -23,19 +24,19 @@ do
   mri_convert $freesurfer/mri/${hem}.ribbon.mgz ./${hem}.ribbon.nii.gz
 
   # copy over lgn and v1
-  cp -R ${rois}/*${hem}.${lgn}.nii.gz ./ROI${hem}.lgn.nii.gz
-  cp -R ${rois}/*${hem}.${v1}.nii.gz ./ROI${hem}.v1.nii.gz
-  [ -f ${rois}/*${hem}.exclusion.nii.gz ] && cp -R ${rois}/*${hem}.exclusion.nii.gz ./ROI${hem}.exclusion.nii.gz 
-
-  # THIS DOESNT SEEM TO HELP
-  #&& mri_vol2vol --mov ./tmp.ROI${hem}.exclusion.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin*.nii.gz --regheader --interp neareast --o ./ROI${hem}.exclusion.nii.gz
+  cp -R ${rois}/*${hem}.${lgn}.nii.gz ./tmp.ROI${hem}.lgn.nii.gz && mri_vol2vol --mov ./tmp.ROI${hem}.lgn.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI${hem}.lgn.nii.gz
+  cp -R ${rois}/*${hem}.${v1}.nii.gz ./tmp.ROI${hem}.v1.nii.gz && mri_vol2vol --mov ./tmp.ROI${hem}.v1.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI${hem}.v1.nii.gz
+  [ -f ${rois}/*${hem}.exclusion.nii.gz ] && cp -R ${rois}/*${hem}.exclusion.nii.gz ./tmp.ROI${hem}.exclusion.nii.gz  && mri_vol2vol --mov ./tmp.ROI${hem}.exclusion.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI${hem}.exclusion.nii.gz
 done
 
 # convert ribbon
 mri_convert $freesurfer/mri/ribbon.mgz ribbon.nii.gz
 
-# THIS DOESNT SEEM TO HELP
-#mri_vol2vol --mov ./tmp.csf.nii.gz --targ ./tmpSubj/dtiinit/dwi_aligned_trilin*.nii.gz --regheader --interp neareast --o ./csf.nii.gz
+mv csf.nii.gz tmp.csf.nii.gz && mri_vol2vol --mov ./csf.nii.gz --targ ${anat} --regheader --interp neareast --o ./csf.nii.gz
 
-# move b0 to ribbon ROI space in order to avoid tesselation of ROIs during contrack
-mv ./tmpSubj/dtiinit/dti/bin/b0.nii.gz ./tmpSubj/dtiinit/dti/bin/b0_dwi_space.nii.gz && mri_vol2vol --mov ./tmpSubj/dtiinit/dti/bin/b0_dwi_space.nii.gz --targ ./ROIlh.v1.nii.gz --regheader --interp nearest --o ./tmpSubj/dtiinit/dti/bin/b0.nii.gz
+# move b0,wm,and pddDispersion to ribbon ROI space in order to avoid tesselation of ROIs during contrack
+files=(`ls ./tmpSubj/dtiinit/dti/bin/`)
+for fls in ${files[*]}
+do
+	cp ./tmpSubj/dtiinit/dti/bin/${fls} ./tmpSubj/dtiinit/dti/bin/${fls#%.nii.gz*}_dtiinit.nii.gz && mri_vol2vol --mov ./tmpSubj/dtiinit/dti/bin/${fls} --targ ${anat} --regheader --interp nearest --o ./tmpSubj/dtiinit/dti/bin/${fls}
+done
