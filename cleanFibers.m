@@ -87,20 +87,9 @@ for ifg = 1:length(orFibersDir)
     hem = extractBetween(orFibersDir(ifg).name,'lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
     
     outname = sprintf('%s/lgn_planes_pruned_contrack_pruned_%s',orFibersDir(ifg).folder,orFibersDir(ifg).name)
-    [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(hemi{hh}).pixdim(1),{thalLatPost.(hem{1}),Not.(hem{1})},{'and','not'},outname);
+    [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(hemi{hh}).pixdim(1),{thalLatPost.(hem{1}),exclusionROI.(hem{1})},{'and','not'},outname);
     mtrExportFibers(fgOut,outname,[],[],[],3)
 end
-
-%for ifg = 1:length(orFibersDir)
-%    fg = fgRead(sprintf('%s/%s',orFibersDir(ifg).folder,orFibersDir(ifg).name));
-%    hem = extractBetween(orFibersDir(ifg).name,'lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
-    
-%    [fg,~,keep1,~] = dtiIntersectFibersWithRoi([],'and',[],thalLatPost.(hem{1}),fg);
-%    [fg,~,keep2,~] = dtiIntersectFibersWithRoi([],'not',[],thalMedPostSub.(hem{1}),fg);
-%     [fg,~,keep3,~] = dtiIntersectFibersWithRoi([],'not',[],anteriorThalLimit.(hem{1}),fg);
-
-%    mtrExportFibers(fg,sprintf('%s/lgn_planes_pruned_contrack_pruned_%s',orFibersDir(ifg).folder,orFibersDir(ifg).name),[],[],[],3)
-%end
 
 %% Load Optic radiations and clip for cleaning
 % load and clip optic radiations
@@ -114,9 +103,6 @@ for ifg = 1:length(orFibersDir)
     end
     clear tmp
 end
-%for ifg = 1:length(orFibersDir)
-%	fgPath{ifg} = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
-%end
 
 % need specific modification to how pdb fgs are loaded
 [mergedFG,classification] = bsc_mergeFGandClass([fgPath]);
