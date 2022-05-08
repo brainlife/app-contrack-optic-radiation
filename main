@@ -27,7 +27,7 @@ fi
 
 # reslice everything in dtiinit/bin to anat space
 if [ ! -f ./tmpSubj/dtiinit/dti/bin/pdf_dtiinit.nii.gz ]; then
-	time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./convert_dtiinit_bin.sh
+	time singularity exec -e -B `pwd`/license.txt:/usr/local/freesurfer/license.txt docker://brainlife/freesurfer:6.0.0 ./convert_dtiinit.sh
 fi
 
 # generate pdf file
