@@ -48,6 +48,7 @@ ctrParams.roiDir = 'ROIs';
 ctrParams.subs = {'dtiinit'};
 
 % set rois and parameters
+j=1;
 for h = 1:length(hemi)
     for i = 1:length(MinDegree)
         ctrParams.roi1{j} = sprintf('lgn_%s_%s',hemi{h},num2str(config.inflate_lgn));
