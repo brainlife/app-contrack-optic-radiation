@@ -89,7 +89,7 @@ for ifg = 1:length(orFibersDir)
     for idg = 1:length(minDegree)
         outname = sprintf('%s/Ecc%sto%s_lgn_%s_%s_v1_%s_%s.pdb',orFibersDir(ifg).folder,num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1},num2str(config.inflate_lgn),hem{1},num2str(config.inflate_v1))
         v1 = bsc_loadAndParseROI([rois,sprintf('Ecc%sto%s_%s_%s.mat',num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1},num2str(config.inflate_v1))]);
-        [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(hemi{hh}).pixdim(1),{thalLatPost.(hem{1}),v1,Not.(hem{1})},{'and','endpoints','not'},outname);
+        [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(hemi{hh}).pixdim(1),{thalLatPost.(hem{1}),v1,exclusionROI.(hem{1})},{'and','endpoints','not'},outname);
         mtrExportFibers(fgOut,outname,[],[],[],3)
     end
 end
