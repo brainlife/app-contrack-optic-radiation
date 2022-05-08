@@ -26,7 +26,6 @@ end
 config = loadjson('config.json');
 
 hemi = {'left','right'};
-a
 topDir = pwd;
 baseDir = fullfile(pwd,'tmpSubj');
 % tractNames = split(config.track_names);
