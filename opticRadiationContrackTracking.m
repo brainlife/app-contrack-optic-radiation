@@ -1,4 +1,4 @@
-function [] = opticRadiationContrack()
+function [] = opticRadiationContrackTracking()
 
 %% load packages
 if ~isdeployed
