@@ -94,7 +94,7 @@ system(cmd);
 
 cd(topDir);
 %% clip fibers and create classification structure
-[classification,mergedFG] = cleanFibers(topDir,config.contrackThreshold,config,MinDegree,MaxDegree);
+[classification,mergedFG] = cleanFibers(topDir,config.contrackThreshold,config);
 
 %% make fg classified structure for eccentricity classification
 fg_classified = bsc_makeFGsFromClassification_v4(classification,mergedFG);
