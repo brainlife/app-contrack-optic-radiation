@@ -57,24 +57,26 @@ for hh = 1:length(hemi)
 %     [~,~] = dtiRoiNiftiFromMat(thalMedPostSub.(hemi{hh}),referenceNifti.(hemi{hh}),sprintf('thalMedPostSub_lgn_%s.nii.gz',hemi{hh}),true);
 end
 
-%% Score fibers to get best streamlines possible
-textPaths = dir(fullfile(topDir,'/tmpSubj/dtiinit/dti/fibers/conTrack/OR/ctrSampler_OR*.txt'));
-for i = 1:length(textPaths)
-    % set up names and variables for score
-    textPath = fullfile(sprintf('%s/%s',textPaths(i).folder,textPaths(i).name));
-    track_pdb_name = extractBetween(textPaths(i).name,'OR_','.txt');
-    pdbPath = fullfile(sprintf('%s/fg_OR_%s.pdb',textPaths(i).folder,track_pdb_name{1}));
-    pdbOutPath = fullfile(sprintf('%s/contrack_pruned_fg_OR_%s.pdb',textPaths(i).folder,track_pdb_name{1}));
-
-    % write command
-    scoreCmd = sprintf('%s/contrack_score.glxa64 -i %s -p %s --thresh %s --sort %s',topDir,textPath,pdbOutPath,num2str(threshold),pdbPath)
-    
-    % run command
-    system(scoreCmd)
-end
+%% Score fibers to get best streamlines possible. THIS DOESNT SEEM TO DO WELL IN OR TRACKING. skipping
+%textPaths = dir(fullfile(topDir,'/tmpSubj/dtiinit/dti/fibers/conTrack/OR/ctrSampler_OR*.txt'));
+%for i = 1:length(textPaths)
+%    % set up names and variables for score
+%    textPath = fullfile(sprintf('%s/%s',textPaths(i).folder,textPaths(i).name));
+%    track_pdb_name = extractBetween(textPaths(i).name,'OR_','.txt');
+%    pdbPath = fullfile(sprintf('%s/fg_OR_%s.pdb',textPaths(i).folder,track_pdb_name{1}));
+%    pdbOutPath = fullfile(sprintf('%s/contrack_pruned_fg_OR_%s.pdb',textPaths(i).folder,track_pdb_name{1}));
+%
+%    % write command
+%    scoreCmd = sprintf('%s/contrack_score.glxa64 -i %s -p %s --thresh %s --sort %s',topDir,textPath,pdbOutPath,num2str(threshold),pdbPath)
+%    
+%    % run command
+%    system(scoreCmd)
+%end
 
 %% flip, add 180, and identify tracts
-orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','contrack_pruned_*.pdb'));
+%orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','contrack_pruned_*.pdb'));
+
+orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','fg_OR_lgn_*.pdb'));
 
 for ifg = 1:length(orFibersDir)
     fg = fgRead(sprintf('%s/%s',orFibersDir(ifg).folder,orFibersDir(ifg).name));
@@ -89,7 +91,8 @@ for ifg = 1:length(orFibersDir)
     for idg = 1:length(minDegree)
         outname = sprintf('%s/Ecc%sto%s_lgn_%s_%s_v1_%s_%s.pdb',orFibersDir(ifg).folder,num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1},num2str(config.inflate_lgn),hem{1},num2str(config.inflate_v1))
         v1 = bsc_loadAndParseROI([rois,sprintf('Ecc%sto%s_%s_%s.mat',num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1},num2str(config.inflate_v1))]);
-        [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(hemi{hh}).pixdim(1),{thalLatPost.(hem{1}),v1,exclusionROI.(hem{1})},{'and','endpoints','not'},outname);
+        [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(hemi{hh}).pixdim(1),{thalLatPost.(hem{1}),v1},{'and','endpoints'},outname);
+        [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fgOut,0.5,{exclusionROI.(hem{1})},{'not'},outname);
         mtrExportFibers(fgOut,outname,[],[],[],3)
     end
 end
