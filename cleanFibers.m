@@ -79,6 +79,7 @@ end
 orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','fg_OR_lgn_*.pdb'));
 
 for ifg = 1:length(orFibersDir)
+    % load fg
     fg = fgRead(sprintf('%s/%s',orFibersDir(ifg).folder,orFibersDir(ifg).name));
     
     % no idea as to why need to do this, or why 180, or why it works, but it seems to work so idk. figure out later
@@ -86,11 +87,19 @@ for ifg = 1:length(orFibersDir)
         fg.fibers{dfg}(1,:) = -(fg.fibers{dfg}(1,:)) + 180;
     end
 
+    % identify hemisphere from name
     hem = extractBetween(orFibersDir(ifg).name,'lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
     
+    % set output name for final fg
     outname = sprintf('%s/lgn_planes_pruned_contrack_pruned_%s',orFibersDir(ifg).folder,orFibersDir(ifg).name)
-    [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(hemi{hh}).pixdim(1),{thalLatPost.(hem{1})},{'and'},outname);
-    [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fgOut,0.5,{exclusionROI.(hem{1})},{'not'},outname);
+    
+    % clean and prune fg
+    [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(hemi{hh}).pixdim(1),{thalLatPost.(hem{1}),thalMedPostSub.(hem{1}),exclusionROI.(hem{1})},{'and','not','not'},outname);
+
+    % align to AP direction
+    [fgOut] = SO_AlignFiberDirection(fgOut,'AP')
+    
+    % output fg
     mtrExportFibers(fgOut,outname,[],[],[],3)
 end
 
@@ -99,7 +108,7 @@ end
 orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','lgn_planes_pruned_contrack_pruned_*.pdb'));
 counter=1;
 for ifg = 1:length(orFibersDir)
-	tmp = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
+    tmp = fgRead(fullfile(orFibersDir(ifg).folder,orFibersDir(ifg).name));
     if length(tmp.fibers) > 0
         fgPath{counter} = tmp;
         counter=counter+1;
