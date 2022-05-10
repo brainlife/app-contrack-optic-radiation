@@ -79,20 +79,32 @@ end
 orFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','fg_OR_lgn_*.pdb'));
 
 for ifg = 1:length(orFibersDir)
+    % load fg
     fg = fgRead(sprintf('%s/%s',orFibersDir(ifg).folder,orFibersDir(ifg).name));
-    hem = extractBetween(fg.name,'fg_OR_lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
     
     % no idea as to why need to do this, or why 180, or why it works, but it seems to work so idk. figure out later
     for dfg = 1:length(fg.fibers)
         fg.fibers{dfg}(1,:) = -(fg.fibers{dfg}(1,:)) + 180;
     end
+
+    % identify hemisphere based name
     hem = extractBetween(orFibersDir(ifg).name,'lgn_',sprintf('_%s',num2str(config.inflate_lgn)));
     
+    % loop through eccentricity binnings
     for idg = 1:length(minDegree)
+        % set output name for fg
         outname = sprintf('%s/Ecc%sto%s_lgn_%s_%s_v1_%s_%s.pdb',orFibersDir(ifg).folder,num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1},num2str(config.inflate_lgn),hem{1},num2str(config.inflate_v1))
+
+        % load v1 eccentricity roi
         v1 = bsc_loadAndParseROI([rois,sprintf('Ecc%sto%s_%s_%s.mat',num2str(minDegree(idg)),num2str(maxDegree(idg)),hem{1},num2str(config.inflate_v1))]);
-        [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(hemi{hh}).pixdim(1),{thalLatPost.(hem{1}),v1},{'and','endpoints'},outname);
-        [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fgOut,0.5,{exclusionROI.(hem{1})},{'not'},outname);
+        
+	% prune and clean streamlines
+	[fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(hemi{hh}).pixdim(1),{thalLatPost.(hem{1}),v1,thalMedPostSub.(hem{1}),exclusionROI.(hem{1})},{'and','endpoints','not','not'},outname);
+
+	% align to AP direction
+	fgOut = SO_AlignFiberDirection(fgOut,'AP')
+
+	% output fg
         mtrExportFibers(fgOut,outname,[],[],[],3)
     end
 end
