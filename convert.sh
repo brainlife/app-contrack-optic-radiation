@@ -2,8 +2,12 @@
 
 rois=`jq -r '.rois' config.json`
 start_roi=`jq -r '.start_roi' config.json`
-eccentricity=`jq -r '.eccentricity' config.json`
+start_roi=(`echo ${start_roi}`)
 term_roi=`jq -r '.term_roi' config.json`
+term_roi=(`echo ${term_roi}`)
+exclusion_roi=`jq -r '.exclusion_roi' config.json`
+exclusion_roi=(`echo ${exclusion_roi}`)
+eccentricity=`jq -r '.eccentricity' config.json`
 freesurfer=`jq -r '.freesurfer' config.json`
 dtiinit=`jq -r '.dtiinit' config.json`
 anat=`jq -r '.t1' config.json`
@@ -22,11 +26,15 @@ do
     hem="rh"
   fi
   mri_convert $freesurfer/mri/${hem}.ribbon.mgz ./tmp.${hem}.ribbon.nii.gz && mri_vol2vol --mov ./tmp.${hem}.ribbon.nii.gz --targ ${anat} --regheader --interp nearest --o ./${hem}.ribbon.nii.gz
+done
 
+
+for h in ${#start_roi[*]}
+do
   # copy over start and term rois
-  cp -R ${rois}/*${hem}.${start_roi}.nii.gz ./tmp.ROI${hem}.${start_roi}.nii.gz && mri_vol2vol --mov ./tmp.ROI${hem}.${start_roi}.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI${hem}.${start_roi}.nii.gz
-  cp -R ${rois}/*${hem}.${term_roi}.nii.gz ./tmp.ROI${hem}.${term_roi}.nii.gz && mri_vol2vol --mov ./tmp.ROI${hem}.${term_roi}.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI${hem}.${term_roi}.nii.gz
-  [ -f ${rois}/*${hem}.exclusion.nii.gz ] && cp -R ${rois}/*${hem}.exclusion.nii.gz ./tmp.ROI${hem}.exclusion.nii.gz  && mri_vol2vol --mov ./tmp.ROI${hem}.exclusion.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI${hem}.exclusion.nii.gz
+  cp -R ${rois}/*${start_roi[$h]}.nii.gz ./tmp.ROI.${start_roi[$h]}.nii.gz && mri_vol2vol --mov ./tmp.ROI.${start_roi[$h]}.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI.${start_roi[$h]}.nii.gz
+  cp -R ${rois}/*${term_roi[$h]}.nii.gz ./tmp.ROI.${term_roi[$h]}.nii.gz && mri_vol2vol --mov ./tmp.ROI.${term_roi[$h]}.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI.${term_roi[$h]}.nii.gz
+  [ -f ${rois}/*${hem}.${exclusion_roi[$h]}.nii.gz ] && cp -R ${rois}/*${exclusion_roi[$h]}.nii.gz ./tmp.ROI.${exclusion_roi[$h]}.nii.gz  && mri_vol2vol --mov ./tmp.ROI$.${exclusion_roi[$h]}.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI.${exclusion_roi[$h]}.nii.gz
 done
 
 # convert ribbon

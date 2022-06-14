@@ -25,7 +25,12 @@ end
 % load config.json
 config = loadjson('config.json');
 
-hemi = {'left','right'};
+%hemi = {'left','right'};
+startRois = split(config.start_roi);
+termRois = split(config.term_roi);
+exclusionRois = split(config.exclusion_roi);
+
+
 topDir = pwd;
 baseDir = fullfile(pwd,'tmpSubj');
 % tractNames = split(config.track_names);
@@ -33,7 +38,7 @@ MinDegree = str2num(config.minDegree);
 MaxDegree = str2num(config.maxDegree);
 
 %% generate .mat rois
-generateMatRois(config,MinDegree,MaxDegree);
+generateMatRois(config,startRois,termRois,exclusionRois,MinDegree,MaxDegree);
 
 %% generate batch parameters
 % params
@@ -48,10 +53,10 @@ ctrParams.subs = {'dtiinit'};
 
 % set rois and parameters
 j=1;
-for h = 1:length(hemi)
+for h = 1:length(startRois)
     for i = 1:length(MinDegree)
-        ctrParams.roi1{j} = sprintf('%s_%s_%s',,config.start_roi,hemi{h},num2str(config.inflate_start_roi));
-        ctrParams.roi2{j} = sprintf('Ecc%sto%s_%s_%s',num2str(MinDegree(i)),num2str(MaxDegree(i)),hemi{h},num2str(config.inflate_term_roi));
+        ctrParams.roi1{j} = sprintf('%s_%s',startRois{h},num2str(config.inflate_start_roi));
+        ctrParams.roi2{j} = sprintf('%s_%s',termRois{h},num2str(config.inflate_term_roi));
         j=j+1;
     end
 end
@@ -94,7 +99,7 @@ system(cmd);
 
 cd(topDir);
 %% clip fibers and create classification structure
-[classification,mergedFG] = cleanFibers(topDir,config.contrackThreshold,config);
+[classification,mergedFG] = cleanFibers(topDir,config.contrackThreshold,config,startRois,termRois,exclusionRois);
 
 %% make fg classified structure for eccentricity classification
 fg_classified = bsc_makeFGsFromClassification_v4(classification,mergedFG);

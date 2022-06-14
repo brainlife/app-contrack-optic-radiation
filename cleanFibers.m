@@ -1,33 +1,28 @@
-function [classification,mergedFG] = cleanFibers(topDir,threshold,config)
+function [classification,mergedFG] = cleanFibers(topDir,threshold,config,startRois,termRois,exclusionRois)
 
 % variables
 rois = fullfile('tmpSubj','dtiinit','ROIs/');
-vwmFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','OR','fg_*.pdb'));
+vwmFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','visual-white-matter','fg_*.pdb'));
 % 
 %% Generate AND & NOT ROIs for fiber cleaning and selection
 % hemisphere
-hemi = {'left','right'};
-
-for hh = 1:length(hemi)
-	if strcmp(hemi{hh},'left')
-		hemisphereROI.(hemi{hh}) = bsc_loadAndParseROI('ribbon_right.nii.gz');
-        exclusionROI.(hemi{hh}) = bsc_loadAndParseROI('ROIlh.exclusion.nii.gz');
-        referenceNifti.(hemi{hh}) = niftiRead([rois,sprintf('lgn_left_%s.nii.gz',num2str(config.inflate_lgn))]);
-	else
-		hemisphereROI.(hemi{hh}) = bsc_loadAndParseROI('ribbon_left.nii.gz');
-        exclusionROI.(hemi{hh}) = bsc_loadAndParseROI('ROIrh.exclusion.nii.gz');
-        referenceNifti.(hemi{hh}) = niftiRead([rois,sprintf('%s_right_%s.nii.gz',config.start_roi,num2str(config.inflate_lgn))]);
-	end
-end
+%hemi = {'left','right'};
 
 % CSF ROI
 csfROI = bsc_loadAndParseROI('csf_bin.nii.gz');
 
-% % NOT ROIs
-for hh = 1:length(hemi)
-	Not.(hemi{hh}) = bsc_mergeROIs(exclusionROI.(hemi{hh}),csfROI);
-    Not.(hemi{hh}) = bsc_mergeROIs(Not.(hemi{hh}),hemisphereROI.(hemi{hh}));
+% NOT ROIs
+for h = 1:length(exclusionRois)
+    exclusionROI.(exclusionRois{h}) = bsc_loadAndParseROI([rois,sprintf('ROI.%s.nii.gz',exclusionRois{h})]);
+    referenceNifti(exclusionRois{h}) = niftiRead([rois,sprintf('ROI.%s.nii.gz',exclusionRois{h})]);
+    Not.(exclusionRois{h}) = bsc_mergeROIs(exclusionROI.(exclusionRois{h}),csfROI);
 end
+
+% % % NOT ROIs
+% for hh = 1:length(hemi)
+% 	Not.(hemi{hh}) = bsc_mergeROIs(exclusionROI.(hemi{hh}),csfROI);
+%     Not.(hemi{hh}) = bsc_mergeROIs(Not.(hemi{hh}),hemisphereROI.(hemi{hh}));
+% end
 
 %% Score fibers to get best streamlines possible
 textPaths = dir(fullfile(topDir,'/tmpSubj/dtiinit/dti/fibers/conTrack/visual-white-matter/ctrSampler_visual-white-matter*.txt'));
@@ -47,7 +42,7 @@ end
 
 %% grab fibers that cross specific boundaries
 vwmFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','visual-white-matter','contrack_pruned_*.pdb'));
-
+counter=1;
 for ifg = 1:length(vwmFibersDir)
     fg = fgRead(sprintf('%s/%s',vwmFibersDir(ifg).folder,vwmFibersDir(ifg).name));
     
@@ -55,20 +50,12 @@ for ifg = 1:length(vwmFibersDir)
     for dfg = 1:length(fg.fibers)
         fg.fibers{dfg}(1,:) = -(fg.fibers{dfg}(1,:)) + 180;
     end
-
-    hem = extractBetween(vwmFibersDir(ifg).name,sprintf('%s_',config.start_roi),sprintf('_%s',num2str(config.inflate_start_roi)));
     
-    outname = sprintf('%s/%s_planes_pruned_contrack_pruned_%s',config.start_roivwmFibersDir(ifg).folder,vwmFibersDir(ifg).name)
-    [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(hemi{hh}).pixdim(1),Not.(hem{1})},{'and','not'},outname);
+    outname = sprintf('%s/%s_%s_planes_pruned_contrack_pruned_%s',startRois{ifg},termRois{ifg},vwmFibersDir(ifg).folder,vwmFibersDir(ifg).name)
+    [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(exclusionRois{ifg}).pixdim(1),Not.(exclusionRois{ifg})},{'not'},outname);
     mtrExportFibers(fgOut,outname,[],[],[],3)
-end
 
-%% Load tracts and clip for cleaning
-% load and clip optic radiations
-vwmFibersDir = dir(fullfile('tmpSubj','dtiinit','dti','fibers','conTrack','visual-white-matter',sprintf('%s_',config.start_roi),'_planes_pruned_contrack_pruned_*.pdb'));
-counter=1;
-for ifg = 1:length(vwmFibersDir)
-	tmp = fgRead(fullfile(vwmFibersDir(ifg).folder,vwmFibersDir(ifg).name));
+    tmp = fgRead(outname)
     if length(tmp.fibers) > 0
         fgPath{counter} = tmp;
         counter=counter+1;
@@ -83,7 +70,7 @@ for ifg = 1:length(fgPath)
     classification.names(ifg) = extractBetween(fgPath{ifg}.name,'fg_visual-white-matter_','_20');
 end
 
-mergedFG.name = sprintf('%s_%s',config.start_roi,config.term_roi;
+mergedFG.name = 'visual-white-matter-tracks';
 
 % find better way to index this
 mergedFG.params = {};
