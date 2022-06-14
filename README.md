@@ -1,7 +1,7 @@
 [![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/brain-life/abcd-spec)
 [![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-brainlife.app.647-blue.svg)](https://doi.org/https://doi.org/10.25663/brainlife.app.647)
 
-# Track Visual White Matter Tracks by Visual Field Eccentricty: Contrack - Eccentricity
+# Track Visual White Matter Tracks by Visual Field Eccentricty: Contrack
 
 This app will track Visual White Matter Tracks by Visual Field Eccentricty using Contrack (Sherbondy et al, 2009). Specifically, this app will track between two rois provided by the user and then segment it into multiple bundles based on the visual property of eccentricity derived from population receptive field (prf) mapping. This app takes a dtiinit, anat/t1w, rois, prf, mask (tissue type), and freesurfer datatypes and outputs a track/tck and wmc datatype.
 
