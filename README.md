@@ -1,9 +1,9 @@
 [![Abcdspec-compliant](https://img.shields.io/badge/ABCD_Spec-v1.1-green.svg)](https://github.com/brain-life/abcd-spec)
-[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-brainlife.app.252-blue.svg)](https://doi.org/https://doi.org/10.25663/brainlife.app.252)
+[![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-brainlife.app.647-blue.svg)](https://doi.org/https://doi.org/10.25663/brainlife.app.647)
 
-# Track The Human Optic RAdiation (THORA): Contrack - Eccentricity
+# Track Visual White Matter Tracks by Visual Field Eccentricty: Contrack - Eccentricity
 
-This app will This app will track the optic radiation using Contrack (Sherbondy et al, 2009). Specifically, this app will track the optic radiation and then segment it into multiple bundles based on the visual property of eccentricity derived from population receptive field (prf) mapping. This app takes a dtiinit, anat/t1w, rois, prf, mask (tissue type), and freesurfer datatypes and outputs a track/tck and wmc datatype.
+This app will track Visual White Matter Tracks by Visual Field Eccentricty using Contrack (Sherbondy et al, 2009). Specifically, this app will track between two rois provided by the user and then segment it into multiple bundles based on the visual property of eccentricity derived from population receptive field (prf) mapping. This app takes a dtiinit, anat/t1w, rois, prf, mask (tissue type), and freesurfer datatypes and outputs a track/tck and wmc datatype.
 
 ### Authors
 
@@ -41,7 +41,7 @@ We kindly ask that you cite the following articles when publishing papers and co
 
 ### On Brainlife.io
 
-You can submit this App online at [https://doi.org/https://doi.org/10.25663/brainlife.app.252](https://doi.org/https://doi.org/10.25663/brainlife.app.252) via the 'Execute' tab.
+You can submit this App online at [https://doi.org/https://doi.org/10.25663/brainlife.app.647](https://doi.org/https://doi.org/10.25663/brainlife.app.647) via the 'Execute' tab.
 
 ### Running Locally (on your machine)
 
