@@ -12,67 +12,63 @@ if ~exist(rois)
     mkdir(rois);
 end
 
-%% lgn ROIs
-% need to remove hard coding of ROI names for lgn in case someone uses
-% something other than freesurfer thalamic nuclei segmentation. basically
-% just require users to input the roi numbers of their lgns and parse that
+%% start ROIs
+% equire users to input the roi names of their start rois and parse that
 % as a configurable input
-lgn.left = niftiRead(fullfile('./ROIlh.lgn.nii.gz'));
-lgn.right = niftiRead(fullfile('./ROIrh.lgn.nii.gz'));
+startRoi.left = niftiRead(fullfile(sprintf('./ROIlh.%s.nii.gz',config.start_roi)));
+startRoi.right = niftiRead(fullfile(sprintf('./ROIrh.%s.nii.gz',config.start_roi)));
 
 for hh = 1:length(hemis)
     % load and inflate roi
-    niiName =  [lgn.(hemis{hh}).fname];
+    niiName =  [startRoi.(hemis{hh}).fname];
                          
-    if isequal(config.inflate_lgn,1)
-        display('no lgn inflation')
+    if isequal(config.inflate_start_roi,1)
+        display('no start roi inflation')
     else
-        display('inflating lgn')
+        display('inflating start roi inflation')
     end
 
-    roiLgn = bsc_roiFromAtlasNums(niiName,1,config.inflate_lgn);
+    roiStart = bsc_roiFromAtlasNums(niiName,1,config.inflate_start_roi);
     
     %% save the ROI
     % nii.gz
-    outNiiName =  [fullfile(rois,sprintf('lgn_%s_%s.nii.gz',hemis{hh},num2str(config.inflate_lgn)))];
-    [ni, roiName]=dtiRoiNiftiFromMat(roiLgn,niiName,outNiiName,0);
+    outNiiName =  [fullfile(rois,sprintf('%s_%s_%s.nii.gz',config.start_roi,hemis{hh},num2str(config.inflate_start_roi)))];
+    [ni, roiName]=dtiRoiNiftiFromMat(roiStart,niiName,outNiiName,0);
     niftiWrite(ni,outNiiName)
 
     % mat
-    matName =  [fullfile(rois,sprintf('lgn_%s_%s.mat',hemis{hh},num2str(config.inflate_lgn)))];
+    matName =  [fullfile(rois,sprintf('%s_%s_%s.mat',config.start_roi,hemis{hh},num2str(config.inflate_start_roi)))];
     binary = true; save = true;
     dtiRoiFromNifti(outNiiName,0,matName,'mat',binary,save);
     clear ni niiName outNiiName matName binary
 end
 
-%% v1 ROIs
-% need to remove hard coding of ROI names for lgn in case someone uses
-% something other than freesurfer thalamic nuclei segmentation. basically
-% just require users to input the roi numbers of their lgns and parse that
+%% term ROIs
+% just require users to input the roi names of their termination rois and parse that
 % as a configurable input
-v1.left = niftiRead(fullfile('./ROIlh.v1.nii.gz'));
-v1.right = niftiRead(fullfile('./ROIrh.v1.nii.gz'));
+termRoi.left = niftiRead(fullfile(sprintf('./ROIlh.%s.nii.gz',config.term_roi)));
+termRoi.right = niftiRead(fullfile(sprintf('./ROIrh.%s.nii.gz',config.term_roi)));
 
 for hh = 1:length(hemis)
     % load and inflate roi
-    niiName =  [v1.(hemis{hh}).fname];
+    niiName =  [termRoi.(hemis{hh}).fname];
                          
-    if isequal(config.inflate_v1,1)
-        display('no v1 inflation')
+    if isequal(config.inflate_term_roi,1)
+        display('no termination roi inflation')
     else
-        display('inflating v1')
+        display('inflating termination roi')
     end
 
-    roiV1 = bsc_roiFromAtlasNums(niiName,1,config.inflate_v1);
+    roiTerm = bsc_roiFromAtlasNums(niiName,1,config.inflate_term_roi);
     
     %% save the ROI
     % nii.gz
-    outNiiName =  [fullfile(rois,sprintf('v1_%s_%s.nii.gz',hemis{hh},num2str(config.inflate_v1)))];
-    [ni, roiName]=dtiRoiNiftiFromMat(roiV1,niiName,outNiiName,0);
+    outNiiName =  [fullfile(rois,sprintf('%s_%s_%s.nii.gz',config.term_roi,hemis{hh},num2str(config.inflate_term_roi)))];
+    [ni, roiName]=dtiRoiNiftiFromMat(roiTerm,niiName,outNiiName,0);
     niftiWrite(ni,outNiiName)
 
     % mat
-    matName =  [fullfile(rois,sprintf('v1_%s_%s.mat',hemis{hh},num2str(config.inflate_v1)))];
+    matName =  [fullfile(rois,sprintf('%s_%s_%s.mat',config.term_roi,hemis{hh},num2str(config.inflate_term_roi)))];
     binary = true; save = true;
     dtiRoiFromNifti(outNiiName,0,matName,'mat',binary,save);
     clear ni niiName outNiiName matName binary

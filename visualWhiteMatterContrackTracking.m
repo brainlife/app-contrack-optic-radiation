@@ -1,4 +1,4 @@
-function [] = opticRadiationContrackTracking()
+function [] = visualWhiteMatterContrackTracking()
 
 %% load packages
 if ~isdeployed
@@ -37,8 +37,8 @@ generateMatRois(config,MinDegree,MaxDegree);
 
 %% generate batch parameters
 % params
-ctrParams.projectName = 'OR';
-ctrParams.logName = 'opticRadiation';
+ctrParams.projectName = 'visual-white-matter';
+ctrParams.logName = 'visual-white-matter';
 ctrParams.baseDir = baseDir;
 ctrParams.dtDir = 'dti';
 ctrParams.roiDir = 'ROIs';
@@ -50,8 +50,8 @@ ctrParams.subs = {'dtiinit'};
 j=1;
 for h = 1:length(hemi)
     for i = 1:length(MinDegree)
-        ctrParams.roi1{j} = sprintf('lgn_%s_%s',hemi{h},num2str(config.inflate_lgn));
-        ctrParams.roi2{j} = sprintf('Ecc%sto%s_%s_%s',num2str(MinDegree(i)),num2str(MaxDegree(i)),hemi{h},num2str(config.inflate_v1));
+        ctrParams.roi1{j} = sprintf('%s_%s_%s',,config.start_roi,hemi{h},num2str(config.inflate_start_roi));
+        ctrParams.roi2{j} = sprintf('Ecc%sto%s_%s_%s',num2str(MinDegree(i)),num2str(MaxDegree(i)),hemi{h},num2str(config.inflate_term_roi));
         j=j+1;
     end
 end
@@ -71,12 +71,12 @@ ctrParams.roi2SeedFlag = 'true';
 ctrParams.multiThread = 0;
 ctrParams.executeSh = 0;
 
-%% Generate OR usinig Sherbondy's contrack
+%% Generate visual white matter tract usinig Sherbondy's contrack
 % make contrack scripts
 [cmd, ~] = ctrInitBatchTrack(ctrParams);
 
 % fix script for missing path to contrack c code: NEED TO POTENTIALLY DEBUG
-scriptPath = dir(fullfile(topDir,'/tmpSubj/dtiinit/dti/fibers/conTrack/OR/*.sh'));
+scriptPath = dir(fullfile(topDir,'/tmpSubj/dtiinit/dti/fibers/conTrack/visual-white-matter/*.sh'));
 contrackPath = [sprintf('%s/contrack_gen.glxa64',topDir) ' '];
 for ifg = 1:length(scriptPath)
 	fid = fopen(fullfile(scriptPath(ifg).folder,scriptPath(ifg).name));
