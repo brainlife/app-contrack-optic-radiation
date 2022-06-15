@@ -34,8 +34,8 @@ exclusionRois = split(config.exclusion_roi);
 topDir = pwd;
 baseDir = fullfile(pwd,'tmpSubj');
 % tractNames = split(config.track_names);
-MinDegree = str2num(config.minDegree);
-MaxDegree = str2num(config.maxDegree);
+%MinDegree = str2num(config.minDegree);
+%MaxDegree = str2num(config.maxDegree);
 
 %% generate .mat rois
 generateMatRois(config,startRois,termRois,exclusionRois,MinDegree,MaxDegree);
