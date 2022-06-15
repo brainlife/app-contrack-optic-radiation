@@ -51,7 +51,7 @@ for ifg = 1:length(vwmFibersDir)
         fg.fibers{dfg}(1,:) = -(fg.fibers{dfg}(1,:)) + 180;
     end
     
-    outname = sprintf('%s/%s_%s_planes_pruned_contrack_pruned_%s',startRois{ifg},termRois{ifg},vwmFibersDir(ifg).folder,vwmFibersDir(ifg).name)
+    outname = sprintf('%s/%s_%s_planes_pruned_contrack_pruned_%s',strrep(startRois{ifg},'.','_'),strrep(termRois{ifg},'.','_'),vwmFibersDir(ifg).folder,vwmFibersDir(ifg).name)
     [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(exclusionRois{ifg}).pixdim(1),Not.(exclusionRois{ifg}),{'not'},outname);
     mtrExportFibers(fgOut,outname,[],[],[],3)
 

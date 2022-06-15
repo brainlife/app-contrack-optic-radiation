@@ -31,12 +31,12 @@ for h = 1:length(startRois)
     
     %% save the ROI
     % nii.gz
-    outNiiName =  [fullfile(rois,sprintf('%s_%s.nii.gz',startRois{h},num2str(config.inflate_start_roi)))];
+    outNiiName =  [fullfile(rois,sprintf('%s_%s.nii.gz',strrep(startRois{h},'.','_'),num2str(config.inflate_start_roi)))];
     [ni, roiName]=dtiRoiNiftiFromMat(roiStart,niiName,outNiiName,0);
     niftiWrite(ni,outNiiName)
 
     % mat
-    matName =  [fullfile(rois,sprintf('%s_%s.mat',startRois{h},num2str(config.inflate_start_roi)))];
+    matName =  [fullfile(rois,sprintf('%s_%s.mat',strrep(startRois{h},'.','_'),num2str(config.inflate_start_roi)))];
     binary = true; save = true;
     dtiRoiFromNifti(outNiiName,0,matName,'mat',binary,save);
     clear ni niiName outNiiName matName binary
@@ -61,12 +61,12 @@ for h = 1:length(termRois)
     
     %% save the ROI
     % nii.gz
-    outNiiName =  [fullfile(rois,sprintf('%s_%s.nii.gz',termRois{h},num2str(config.inflate_term_roi)))];
+    outNiiName =  [fullfile(rois,sprintf('%s_%s.nii.gz',strrep(termRois{h},'.','_'),num2str(config.inflate_term_roi)))];
     [ni, roiName]=dtiRoiNiftiFromMat(roiTerm,niiName,outNiiName,0);
     niftiWrite(ni,outNiiName)
 
     % mat
-    matName =  [fullfile(rois,sprintf('%s_%s.mat',termRois{h},num2str(config.inflate_term_roi)))];
+    matName =  [fullfile(rois,sprintf('%s_%s.mat',strrep(termRois{h},'.','_'),num2str(config.inflate_term_roi)))];
     binary = true; save = true;
     dtiRoiFromNifti(outNiiName,0,matName,'mat',binary,save);
     clear ni niiName outNiiName matName binary

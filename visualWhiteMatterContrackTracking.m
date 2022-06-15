@@ -54,9 +54,9 @@ ctrParams.subs = {'dtiinit'};
 % set rois and parameters
 j=1;
 for h = 1:length(startRois)
-        ctrParams.roi1{j} = sprintf('%s_%s',startRois{h},num2str(config.inflate_start_roi));
-        ctrParams.roi2{j} = sprintf('%s_%s',termRois{h},num2str(config.inflate_term_roi));
-        j=j+1;
+    ctrParams.roi1{j} = sprintf('%s_%s',strrep(startRois{h},'.','_'),num2str(config.inflate_start_roi));
+    ctrParams.roi2{j} = sprintf('%s_%s',strrep(termRois{h},'.','_'),num2str(config.inflate_term_roi));
+    j=j+1;
 end
 
 ctrParams.nSamples = config.nSamples;
