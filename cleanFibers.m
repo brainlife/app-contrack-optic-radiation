@@ -13,8 +13,8 @@ csfROI = bsc_loadAndParseROI('csf_bin.nii.gz');
 
 % NOT ROIs
 for h = 1:length(exclusionRois)
-    exclusionROI.(exclusionRois{h}) = bsc_loadAndParseROI([rois,sprintf('ROI.%s.nii.gz',exclusionRois{h})]);
-    referenceNifti(exclusionRois{h}) = niftiRead([rois,sprintf('ROI.%s.nii.gz',exclusionRois{h})]);
+    exclusionROI.(exclusionRois{h}) = bsc_loadAndParseROI([rois,sprintf('%s.nii.gz',exclusionRois{h})]);
+    referenceNifti(exclusionRois{h}) = niftiRead([rois,sprintf('%s.nii.gz',exclusionRois{h})]);
     Not.(exclusionRois{h}) = bsc_mergeROIs(exclusionROI.(exclusionRois{h}),csfROI);
 end
 
