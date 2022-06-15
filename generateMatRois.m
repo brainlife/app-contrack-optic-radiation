@@ -85,12 +85,12 @@ for h = 1:length(exclusionRois)
     
     %% save the ROI
     % nii.gz
-    outNiiName =  [fullfile(rois,sprintf('%s.nii.gz',exclusionRois{h}))];
+    outNiiName =  [fullfile(rois,sprintf('%s.nii.gz',strrep(exclusionRois{h},'.','_')))];
     [ni, roiName]=dtiRoiNiftiFromMat(roiExclusion,niiName,outNiiName,0);
     niftiWrite(ni,outNiiName)
 
     % mat
-    matName =  [fullfile(rois,sprintf('%s.mat',exclusionRois{h}))];
+    matName =  [fullfile(rois,sprintf('%s.mat',strrep(exclusionRois{h},'.','_')))];
     binary = true; save = true;
     dtiRoiFromNifti(outNiiName,0,matName,'mat',binary,save);
     clear ni niiName outNiiName matName binary

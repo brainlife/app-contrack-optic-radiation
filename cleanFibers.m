@@ -13,9 +13,9 @@ csfROI = bsc_loadAndParseROI('csf_bin.nii.gz');
 
 % NOT ROIs
 for h = 1:length(exclusionRois)
-    exclusionROI.(exclusionRois{h}) = bsc_loadAndParseROI([rois,sprintf('%s.nii.gz',exclusionRois{h})]);
-    referenceNifti(exclusionRois{h}) = niftiRead([rois,sprintf('%s.nii.gz',exclusionRois{h})]);
-    Not.(exclusionRois{h}) = bsc_mergeROIs(exclusionROI.(exclusionRois{h}),csfROI);
+    exclusionROI.(strrep(exclusionRois{h},'.','_')) = bsc_loadAndParseROI([rois,sprintf('%s.nii.gz',strrep(exclusionRois{h},'.','_'))]);
+    referenceNifti(strrep(exclusionRois{h},'.','_')) = niftiRead([rois,sprintf('%s.nii.gz',strrep(exclusionRois{h},'.','_'))]);
+    Not.(strrep(exclusionRois{h},'.','_')) = bsc_mergeROIs(exclusionROI.(strrep(exclusionRois{h},'.','_')),csfROI);
 end
 
 % % % NOT ROIs
@@ -52,7 +52,7 @@ for ifg = 1:length(vwmFibersDir)
     end
     
     outname = sprintf('%s/%s_%s_planes_pruned_contrack_pruned_%s',strrep(startRois{ifg},'.','_'),strrep(termRois{ifg},'.','_'),vwmFibersDir(ifg).folder,vwmFibersDir(ifg).name)
-    [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(exclusionRois{ifg}).pixdim(1),Not.(exclusionRois{ifg}),{'not'},outname);
+    [fgOut,keepFG] = wma_SegmentFascicleFromConnectome_Bl(fg,referenceNifti.(strrep(exclusionRois{ifg},'.','_')).pixdim(1),Not.(strrep(exclusionRois{ifg},'.','_')),{'not'},outname);
     mtrExportFibers(fgOut,outname,[],[],[],3)
 
     tmp = fgRead(outname)
