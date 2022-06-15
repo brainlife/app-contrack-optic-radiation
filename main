@@ -32,6 +32,7 @@ fi
 
 # generate pdf file
 if [ ! -f ./track.tck ]; then
+	rm -rf ./tmpSubj/dtiinit/dti/fibers/visual-white-matter/*.txt ./tmpSubj/dtiinit/dti/fibers/visual-white-matter/*.sh
 	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./contrackTrack/visualWhiteMatterContrackTracking
 fi
 

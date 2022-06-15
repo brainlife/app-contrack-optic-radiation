@@ -30,7 +30,7 @@ for i = 1:length(textPaths)
     % set up names and variables for score
     textPath = fullfile(sprintf('%s/%s',textPaths(i).folder,textPaths(i).name));
     track_pdb_name = extractBetween(textPaths(i).name,'visual-white-matter_','.txt');
-    pdbPath = fullfile(sprintf('%s/fg_OR_%s.pdb',textPaths(i).folder,track_pdb_name{1}));
+    pdbPath = fullfile(sprintf('%s/fg_visual-white-matter_%s.pdb',textPaths(i).folder,track_pdb_name{1}));
     pdbOutPath = fullfile(sprintf('%s/contrack_pruned_fg_visual-white-matter_%s.pdb',textPaths(i).folder,track_pdb_name{1}));
 
     % write command
