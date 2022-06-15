@@ -30,8 +30,8 @@ done
 
 
 if [ ${#start_roi[*]} -eq 1 ]; then
-  
-for h in (( h=0; h<${#start_roi[*]}; h++ ))
+
+for (( h=0; h<${#start_roi[*]}; h++ ))
 do
   # copy over start and term rois
   cp -R ${rois}/*${start_roi[$h]}.nii.gz ./tmp.ROI.${start_roi[$h]}.nii.gz && mri_vol2vol --mov ./tmp.ROI.${start_roi[$h]}.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI.${start_roi[$h]}.nii.gz
