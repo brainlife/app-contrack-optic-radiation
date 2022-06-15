@@ -20,8 +20,7 @@ done
 
 # remove start and termination rois from exclusion and csf
 for (( i=0; i<${#start_roi[*]}; i++ ))
-  do
+do
     fslmaths ./ROI.${exclusion_roi[$i]}.nii.gz -sub ./ROI.${start_roi[$i]}.nii.gz -sub ./ROI.${term_roi[$i]}.nii.gz -bin ./ROI.${exclusion_roi}.nii.gz
     fslmaths ./csf_bin.nii.gz -sub ./ROI.${start_roi[$i]}.nii.gz -sub ./ROI.${term_roi[$i]}.nii.gz -bin ./csf_bin_${start_roi[$i]}_${term_roi[$i]}.nii.gz
-  done
 done

@@ -28,9 +28,6 @@ do
   mri_convert $freesurfer/mri/${hem}.ribbon.mgz ./tmp.${hem}.ribbon.nii.gz && mri_vol2vol --mov ./tmp.${hem}.ribbon.nii.gz --targ ${anat} --regheader --interp nearest --o ./${hem}.ribbon.nii.gz
 done
 
-
-if [ ${#start_roi[*]} -eq 1 ]; then
-
 for (( h=0; h<${#start_roi[*]}; h++ ))
 do
   # copy over start and term rois
