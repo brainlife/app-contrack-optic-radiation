@@ -1,4 +1,4 @@
-function [] = generateMatRois(config,startRois,termRois,exclusionROIs,MinDegree,MaxDegree)
+function [] = generateMatRois(config,startRois,termRois,exclusionRois,MinDegree,MaxDegree)
 
 % parse inputs
 roisDir = fullfile(config.rois);

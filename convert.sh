@@ -33,7 +33,7 @@ do
   # copy over start and term rois
   cp -R ${rois}/*${start_roi[$h]}.nii.gz ./tmp.ROI.${start_roi[$h]}.nii.gz && mri_vol2vol --mov ./tmp.ROI.${start_roi[$h]}.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI.${start_roi[$h]}.nii.gz
   cp -R ${rois}/*${term_roi[$h]}.nii.gz ./tmp.ROI.${term_roi[$h]}.nii.gz && mri_vol2vol --mov ./tmp.ROI.${term_roi[$h]}.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI.${term_roi[$h]}.nii.gz
-  [ -f ${rois}/*${hem}.${exclusion_roi[$h]}.nii.gz ] && cp -R ${rois}/*${exclusion_roi[$h]}.nii.gz ./tmp.ROI.${exclusion_roi[$h]}.nii.gz  && mri_vol2vol --mov ./tmp.ROI$.${exclusion_roi[$h]}.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI.${exclusion_roi[$h]}.nii.gz
+  cp -R ${rois}/*${exclusion_roi[$h]}.nii.gz ./tmp.ROI.${exclusion_roi[$h]}.nii.gz  && mri_vol2vol --mov ./tmp.ROI$.${exclusion_roi[$h]}.nii.gz --targ ${anat} --regheader --interp nearest --o ./ROI.${exclusion_roi[$h]}.nii.gz
 done
 
 # convert ribbon
