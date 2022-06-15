@@ -37,7 +37,7 @@ baseDir = fullfile(pwd,'tmpSubj');
 %MaxDegree = str2num(config.maxDegree);
 
 %% generate .mat rois
-generateMatRois(config,startRois,termRois,exclusionRois,MinDegree,MaxDegree);
+generateMatRois(config,startRois,termRois,exclusionRois);
 
 %% generate batch parameters
 % params
