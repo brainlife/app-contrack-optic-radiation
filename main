@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -l nodes=1:ppn=1,walltime=32:00:00,vmem=20gb
-#PBS -N app-contract-optic-radiation
+#PBS -N app-contract-visual-white-matter
 
 # create csf mask
 if [ ! -f csf.nii.gz ]; then
@@ -22,7 +22,7 @@ fi
 
 # generate pdf file
 if [ ! -f ./tmpSubj/dtiinit/dti/bin/pdf.nii.gz ]; then
-	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./contrackPrep/opticRadiationContrackPrep
+	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./contrackPrep/visualWhiteMatterContrackPrep
 fi
 
 # reslice everything in dtiinit/bin to anat space
@@ -32,7 +32,8 @@ fi
 
 # generate pdf file
 if [ ! -f ./track.tck ]; then
-	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./contrackTrack/opticRadiationContrackTracking
+	rm -rf ./tmpSubj/dtiinit/dti/fibers/visual-white-matter/*.txt ./tmpSubj/dtiinit/dti/fibers/visual-white-matter/*.sh
+	time singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./contrackTrack/visualWhiteMatterContrackTracking
 fi
 
 # cleanup

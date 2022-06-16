@@ -20,8 +20,8 @@ addpath(genpath('/N/u/brlife/git/jsonlab'))
 addpath(genpath('/N/soft/mason/SPM/spm8'))
 addpath(genpath('/N/u/brlife/git/wma_tools'))
 addpath(genpath('/N/u/brlife/git/afq'))
-mcc -m -R -nodisplay -d contrackPrep opticRadiationContrackPrep
-mcc -m -R -nodisplay -d contrackTrack opticRadiationContrackTracking
+mcc -m -R -nodisplay -d contrackPrep visualWhiteMatterContrackPrep
+mcc -m -R -nodisplay -d contrackTrack visualWhiteMatterContrackTracking
 exit
 END
 matlab -nodisplay -nosplash -r build
